@@ -1263,7 +1263,56 @@
                 </div>
                 <div id="map">
                     <div class="map-background"></div>
-                    <div class="map-container" id="mapContainer"></div>
+                    <div class="map-container" id="mapContainer">
+                        <div class="map-marker" style="left: 82%; top: 20%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#3b82f6" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#3b82f6" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">Boston, MA</span><span class="map-tooltip-date">Sept 10</span></div>
+                        </div>
+                        <div class="map-marker" style="left: 72%; top: 25%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#ef4444" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#ef4444" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">Detroit, MI</span><span class="map-tooltip-date">Sept 16</span></div>
+                        </div>
+                        <div class="map-marker" style="left: 85%; top: 18%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#3b82f6" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#3b82f6" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">New York, NY</span><span class="map-tooltip-date">Sept 23</span></div>
+                        </div>
+                        <div class="map-marker" style="left: 78%; top: 50%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#ef4444" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#ef4444" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">Atlanta, GA</span><span class="map-tooltip-date">Oct 8</span></div>
+                        </div>
+                        <div class="map-marker" style="left: 83%; top: 38%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#3b82f6" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#3b82f6" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">Washington, DC</span><span class="map-tooltip-date">Oct 15</span></div>
+                        </div>
+                        <div class="map-marker" style="left: 18%; top: 32%;">
+                            <svg width="48" height="48" viewBox="0 0 48 48">
+                                <circle cx="24" cy="24" r="16" fill="#ef4444" opacity="0.2"/>
+                                <circle cx="24" cy="24" r="12" fill="#ef4444" opacity="0.95"/>
+                                <circle cx="24" cy="24" r="12" fill="none" stroke="#fff" stroke-width="2.5"/>
+                            </svg>
+                            <div class="map-tooltip"><span class="map-tooltip-city">San Francisco, CA</span><span class="map-tooltip-date">Oct 19-22</span></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1980,70 +2029,7 @@
             }
         });
 
-        // Tour cities with percentage coordinates for positioning on map
-        const cities = [
-            { name: 'Boston, MA', x: 82, y: 20, date: 'Sept 10', color: '#3b82f6' },
-            { name: 'Detroit, MI', x: 72, y: 25, date: 'Sept 16', color: '#ef4444' },
-            { name: 'New York, NY', x: 85, y: 18, date: 'Sept 23', color: '#3b82f6' },
-            { name: 'Atlanta, GA', x: 78, y: 50, date: 'Oct 8', color: '#ef4444' },
-            { name: 'Washington, DC', x: 83, y: 38, date: 'Oct 15', color: '#3b82f6' },
-            { name: 'San Francisco, CA', x: 18, y: 32, date: 'Oct 19-22', color: '#ef4444' }
-        ];
-
-        // Initialize map with markers
-        const mapContainer = document.getElementById('mapContainer');
-
-        cities.forEach((city) => {
-            // Create marker wrapper
-            const marker = document.createElement('div');
-            marker.className = 'map-marker';
-            marker.style.left = city.x + '%';
-            marker.style.top = city.y + '%';
-
-            // Create SVG marker
-            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', '48');
-            svg.setAttribute('height', '48');
-            svg.setAttribute('viewBox', '0 0 48 48');
-
-            // Create outer circle (glow)
-            const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            glow.setAttribute('cx', '24');
-            glow.setAttribute('cy', '24');
-            glow.setAttribute('r', '16');
-            glow.setAttribute('fill', city.color);
-            glow.setAttribute('opacity', '0.2');
-
-            // Create main circle
-            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', '24');
-            circle.setAttribute('cy', '24');
-            circle.setAttribute('r', '12');
-            circle.setAttribute('fill', city.color);
-            circle.setAttribute('opacity', '0.95');
-
-            // Create border
-            const border = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            border.setAttribute('cx', '24');
-            border.setAttribute('cy', '24');
-            border.setAttribute('r', '12');
-            border.setAttribute('fill', 'none');
-            border.setAttribute('stroke', '#fff');
-            border.setAttribute('stroke-width', '2.5');
-
-            svg.appendChild(glow);
-            svg.appendChild(circle);
-            svg.appendChild(border);
-            marker.appendChild(svg);
-
-            // Create tooltip
-            const tooltip = document.createElement('div');
-            tooltip.className = 'map-tooltip';
-            tooltip.innerHTML = `<span class="map-tooltip-city">${city.name}</span><span class="map-tooltip-date">${city.date}</span>`;
-            marker.appendChild(tooltip);
-
-            mapContainer.appendChild(marker);
-        });
+        // Map markers are now hardcoded in HTML for visibility
     </script>
 </body>
 </html>

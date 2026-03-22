@@ -4,276 +4,389 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Up for Debate - Town Hall Tour 2026</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        :root {
-            --primary-blue: #1e3a8a;
-            --primary-red: #991b1b;
-            --accent-blue: #3b82f6;
-            --accent-red: #ef4444;
-            --dark-bg: #0f1419;
-            --light-text: #f5f5f5;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--dark-bg); color: var(--light-text); line-height: 1.6; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .navbar { background-color: rgba(15, 20, 25, 0.95); border-bottom: 2px solid #374151; position: sticky; top: 0; z-index: 1000; }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; height: 70px; }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: bold; color: white; }
-        .nav-menu { display: flex; list-style: none; gap: 40px; }
-        .nav-link { color: #d1d5db; text-decoration: none; font-weight: 500; transition: all 0.3s ease; cursor: pointer; }
-        .nav-link:hover { color: var(--accent-blue); }
-        .nav-link.active { color: var(--accent-blue); border-bottom: 2px solid var(--accent-blue); padding-bottom: 5px; }
-        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg, var(--primary-blue) 0%, transparent 40%, transparent 60%, var(--primary-red) 100%); }
-        .hero-content { position: relative; z-index: 2; text-align: center; color: white; }
-        .hero-title { font-size: 80px; font-weight: 900; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0, 0, 0, 0.7); animation: fadeInDown 0.8s ease-out; }
-        .hero-subtitle { font-size: 32px; margin-bottom: 10px; color: var(--accent-blue); animation: fadeInUp 0.8s ease-out 0.2s both; }
-        .hero-description { font-size: 24px; margin-bottom: 20px; color: var(--light-text); animation: fadeInUp 0.8s ease-out 0.4s both; }
-        .hero-tagline { font-size: 18px; margin-bottom: 40px; color: #d1d5db; font-style: italic; animation: fadeInUp 0.8s ease-out 0.6s both; }
-        .cta-button { display: inline-block; padding: 16px 40px; background: linear-gradient(90deg, var(--accent-blue), var(--accent-red)); color: white; text-decoration: none; font-weight: bold; border-radius: 50px; transition: all 0.3s ease; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); animation: fadeInUp 0.8s ease-out 0.8s both; }
-        .cta-button:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(59, 130, 246, 0.4); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0a0e27; color: #f5f5f5; overflow-x: hidden; }
+        
+        /* Animated background */
+        .stars-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .star { position: absolute; opacity: 0.6; }
+        .star.blue { color: #3b82f6; }
+        .star.red { color: #ef4444; }
+        
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+        
+        /* Navbar */
+        .navbar { background: linear-gradient(to bottom, rgba(10,14,39,0.98), rgba(10,14,39,0.8)); border-bottom: 3px solid; border-image: linear-gradient(90deg, #3b82f6, #ef4444) 1; position: sticky; top: 0; z-index: 1000; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; height: 80px; }
+        .logo { font-size: 28px; font-weight: 900; background: linear-gradient(90deg, #3b82f6, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: 2px; }
+        .nav-menu { display: flex; list-style: none; gap: 50px; }
+        .nav-link { color: #d1d5db; text-decoration: none; font-weight: 600; transition: all 0.3s ease; position: relative; }
+        .nav-link:hover { color: #3b82f6; }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -5px; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, #3b82f6, #ef4444); }
+        
+        /* Hero Section */
+        .hero { position: relative; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; background: linear-gradient(135deg, rgba(30,58,138,0.3) 0%, rgba(0,0,0,0.7) 50%, rgba(153,27,27,0.3) 100%); }
+        .hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: 
+            radial-gradient(circle at 20% 30%, rgba(59,130,246,0.1) 0%, transparent 30%),
+            radial-gradient(circle at 80% 70%, rgba(239,68,68,0.1) 0%, transparent 30%);
+        }
+        .hero-content { position: relative; z-index: 2; text-align: center; animation: fadeInDown 1s ease-out; }
+        .hero-title { font-size: 120px; font-weight: 900; margin-bottom: 20px; text-shadow: 0 10px 40px rgba(0,0,0,0.8); letter-spacing: -2px; line-height: 1; animation: slideInUp 0.8s ease-out 0.2s both; }
+        .hero-subtitle { font-size: 48px; margin-bottom: 10px; background: linear-gradient(90deg, #3b82f6, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; animation: slideInUp 0.8s ease-out 0.4s both; }
+        .hero-description { font-size: 32px; margin-bottom: 40px; color: #d1d5db; animation: slideInUp 0.8s ease-out 0.6s both; }
+        .cta-button { display: inline-block; padding: 18px 50px; background: linear-gradient(90deg, #3b82f6, #ef4444); color: white; text-decoration: none; font-weight: bold; font-size: 18px; border-radius: 60px; transition: all 0.3s ease; box-shadow: 0 15px 50px rgba(59,130,246,0.3); animation: slideInUp 0.8s ease-out 0.8s both; }
+        .cta-button:hover { transform: translateY(-5px); box-shadow: 0 20px 60px rgba(59,130,246,0.5); }
+        
         @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .section { padding: 80px 0; border-bottom: 1px solid #374151; }
-        .matchup { background-color: rgba(30, 58, 138, 0.1); }
-        h2 { font-size: 48px; text-align: center; margin-bottom: 60px; }
-        .matchup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-        .matchup-card { background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.15) 100%); border: 1px solid #374151; border-radius: 12px; padding: 40px; text-align: center; transition: all 0.3s ease; }
-        .matchup-card.left-card { border-left: 4px solid var(--accent-blue); }
-        .matchup-card.right-card { border-right: 4px solid var(--accent-red); }
-        .matchup-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
-        .matchup-image { width: 200px; height: 200px; border-radius: 100%; object-fit: cover; border: 3px solid #374151; }
-        .matchup-card h3 { font-size: 28px; margin: 20px 0 10px; }
-        .political-affiliation { font-size: 14px; font-weight: bold; letter-spacing: 2px; margin: 10px 0; padding: 8px 16px; display: inline-block; border-radius: 20px; }
-        .political-affiliation.left { background-color: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
-        .political-affiliation.right { background-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-        .bio { text-align: left; font-size: 15px; line-height: 1.8; }
-        .bio p { margin-bottom: 15px; color: #d1d5db; }
-        .topics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin: 40px 0; }
-        .topic-item { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%); padding: 25px; border-radius: 8px; border: 1px solid #374151; transition: all 0.3s ease; }
-        .topic-item:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); }
-        .topic-item h4 { color: var(--accent-blue); margin-bottom: 10px; }
-        .tour-dates { background-color: rgba(153, 27, 27, 0.05); }
-        .dates-content { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; }
-        .map-container { background: rgba(30, 58, 138, 0.1); border-radius: 12px; border: 1px solid #374151; overflow: hidden; height: 500px; }
-        .tour-events { background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.15) 100%); padding: 30px; border-radius: 12px; border: 1px solid #374151; }
-        .tour-event { display: flex; gap: 20px; padding: 15px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border-left: 3px solid var(--accent-blue); margin-bottom: 15px; transition: all 0.3s ease; }
-        .tour-event:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.05); }
-        .event-number { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-red)); border-radius: 50%; font-weight: bold; flex-shrink: 0; }
-        .event-details h4 { margin-bottom: 5px; }
-        .event-details .date { font-size: 13px; color: var(--accent-blue); }
-        .event-details .venue { font-size: 13px; color: #d1d5db; }
-        .key-issues { background-color: rgba(25, 25, 35, 0.8); }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        
+        /* Section Styles */
+        .section { padding: 120px 0; position: relative; border-bottom: 1px solid rgba(59,130,246,0.1); }
+        .section-title { font-size: 80px; font-weight: 900; text-align: center; margin-bottom: 80px; background: linear-gradient(90deg, #3b82f6, #ef4444); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-subtitle { text-align: center; color: #d1d5db; font-size: 18px; margin-bottom: 60px; }
+        
+        /* Matchup Section */
+        .matchup { background: linear-gradient(135deg, rgba(30,58,138,0.1) 0%, rgba(153,27,27,0.1) 100%); }
+        .matchup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+        .matchup-card { background: rgba(255,255,255,0.03); border: 2px solid; border-image: linear-gradient(135deg, #3b82f6, #ef4444) 1; border-radius: 20px; padding: 50px; text-align: center; transition: all 0.4s ease; backdrop-filter: blur(10px); }
+        .matchup-card:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(59,130,246,0.2); }
+        .matchup-image { width: 280px; height: 360px; border-radius: 15px; object-fit: cover; margin: 0 auto 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transition: all 0.4s ease; border: 3px solid; }
+        .matchup-card:first-child .matchup-image { border-color: #3b82f6; }
+        .matchup-card:last-child .matchup-image { border-color: #ef4444; }
+        .matchup-image:hover { transform: scale(1.05); }
+        .matchup-card h3 { font-size: 42px; margin: 20px 0 15px; }
+        .political-affiliation { display: inline-block; padding: 12px 30px; border-radius: 30px; font-weight: 700; font-size: 14px; letter-spacing: 1px; margin: 15px 0; }
+        .matchup-card:first-child .political-affiliation { background: rgba(59,130,246,0.2); color: #3b82f6; }
+        .matchup-card:last-child .political-affiliation { background: rgba(239,68,68,0.2); color: #ef4444; }
+        .bio { text-align: left; font-size: 16px; line-height: 1.8; color: #d1d5db; }
+        .bio p { margin-bottom: 15px; }
+        
+        /* Topics Grid */
+        .topics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; margin: 60px 0; }
+        .topic-item { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(239,68,68,0.1)); padding: 30px; border-radius: 15px; border: 1px solid rgba(59,130,246,0.2); transition: all 0.3s ease; }
+        .topic-item:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(59,130,246,0.15); background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(239,68,68,0.2)); }
+        .topic-item h4 { color: #3b82f6; margin-bottom: 12px; font-size: 18px; }
+        .topic-item p { color: #d1d5db; font-size: 14px; line-height: 1.6; }
+        
+        /* Map Section */
+        .tour-dates { background: linear-gradient(135deg, rgba(30,58,138,0.05) 0%, rgba(153,27,27,0.05) 100%); }
+        #map { height: 600px; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.4); margin: 40px 0; border: 2px solid rgba(59,130,246,0.3); }
+        .map-legend { background: rgba(10,14,39,0.9); padding: 30px; border-radius: 15px; margin-top: 40px; border: 1px solid rgba(59,130,246,0.2); }
+        .legend-item { display: flex; align-items: center; gap: 15px; margin-bottom: 12px; color: #d1d5db; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+        .legend-dot.confirmed { background: #3b82f6; }
+        .legend-dot.potential { background: #ef4444; }
+        
+        /* Tour Events List */
+        .tour-events { background: rgba(255,255,255,0.02); padding: 40px; border-radius: 15px; border: 1px solid rgba(59,130,246,0.2); margin-top: 40px; }
+        .tour-event { display: flex; gap: 25px; padding: 25px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 20px; transition: all 0.3s ease; }
+        .tour-event:hover { background: rgba(255,255,255,0.06); transform: translateX(10px); }
+        .event-number { display: flex; align-items: center; justify-content: center; width: 50px; height: 50px; background: linear-gradient(135deg, #3b82f6, #ef4444); border-radius: 50%; font-weight: bold; font-size: 20px; flex-shrink: 0; }
+        .event-details h4 { margin-bottom: 8px; font-size: 18px; }
+        .event-details .date { font-size: 14px; color: #3b82f6; font-weight: 600; }
+        .event-details .venue { font-size: 13px; color: #d1d5db; margin-top: 4px; }
+        
+        /* Issues Section */
+        .key-issues { background: linear-gradient(135deg, rgba(30,58,138,0.05) 0%, rgba(153,27,27,0.05) 100%); }
         .issues-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
-        .issue-card { background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.15) 100%); border: 1px solid #374151; border-radius: 12px; padding: 35px; transition: all 0.3s ease; }
-        .issue-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); }
+        .issue-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(59,130,246,0.2); border-radius: 15px; padding: 40px; transition: all 0.4s ease; }
+        .issue-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.04); box-shadow: 0 20px 50px rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); }
+        .issue-card h3 { font-size: 28px; margin-bottom: 15px; color: #fff; }
         .issue-intro { font-size: 14px; color: #d1d5db; margin: 10px 0; font-style: italic; }
-        .position { margin: 20px 0; padding: 20px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; border-left: 3px solid var(--border-color); transition: all 0.3s ease; }
-        .position.left { border-left-color: var(--accent-blue); }
-        .position.right { border-left-color: var(--accent-red); }
-        .position:hover { background: rgba(255, 255, 255, 0.06); }
-        .position h4 { font-size: 16px; margin: 10px 0; }
-        .left-position { color: var(--accent-blue); }
-        .right-position { color: var(--accent-red); }
-        .position-img { width: 80px; height: 80px; border-radius: 8px; object-fit: cover; margin: 10px 0; border: 2px solid #374151; }
-        .quote { font-size: 15px; font-style: italic; color: var(--light-text); line-height: 1.8; margin: 15px 0; padding: 15px 20px; border-radius: 4px; border-left: 3px solid var(--accent-blue); background: rgba(59, 130, 246, 0.05); }
-        .position.right .quote { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.05); }
-        .articles { padding: 80px 0; }
-        .articles h2 { margin-bottom: 15px; }
-        .section-subtitle { text-align: center; color: #d1d5db; margin-bottom: 50px; font-size: 16px; }
+        .position { margin: 25px 0; padding: 25px; background: rgba(255,255,255,0.03); border-radius: 12px; border-left: 4px solid; transition: all 0.3s ease; }
+        .position:hover { background: rgba(255,255,255,0.06); }
+        .position.left { border-left-color: #3b82f6; }
+        .position.right { border-left-color: #ef4444; }
+        .position-img { width: 100px; height: 100px; border-radius: 10px; object-fit: cover; margin: 10px 0; border: 2px solid rgba(59,130,246,0.3); }
+        .position h4 { font-size: 16px; margin: 12px 0; }
+        .left-position { color: #3b82f6; }
+        .right-position { color: #ef4444; }
+        .quote { font-size: 15px; font-style: italic; color: #e5e7eb; line-height: 1.8; margin: 15px 0; padding: 15px 20px; border-radius: 8px; border-left: 3px solid; background: rgba(255,255,255,0.02); }
+        .position.right .quote { border-left-color: #ef4444; }
+        .position.left .quote { border-left-color: #3b82f6; }
+        
+        /* Articles Section */
+        .articles { padding: 120px 0; }
         .articles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .article-card { background: linear-gradient(135deg, rgba(30, 58, 138, 0.15) 0%, rgba(153, 27, 27, 0.15) 100%); border: 1px solid #374151; border-radius: 12px; padding: 30px; transition: all 0.3s ease; display: flex; flex-direction: column; }
-        .article-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4); }
+        .article-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(59,130,246,0.2); border-radius: 15px; padding: 30px; transition: all 0.4s ease; display: flex; flex-direction: column; }
+        .article-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.04); box-shadow: 0 20px 50px rgba(59,130,246,0.15); }
         .article-header { margin-bottom: 20px; }
         .article-header h3 { font-size: 18px; margin-bottom: 10px; line-height: 1.4; }
-        .article-meta { font-size: 12px; color: var(--accent-blue); font-weight: 600; }
+        .article-meta { font-size: 12px; color: #3b82f6; font-weight: 600; }
         .article-excerpt { color: #d1d5db; font-size: 14px; margin-bottom: 20px; flex-grow: 1; }
-        .article-footer { display: flex; justify-content: space-between; border-top: 1px solid #374151; padding-top: 15px; }
-        .category { font-size: 12px; padding: 4px 12px; background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); border-radius: 20px; font-weight: 600; }
-        .footer { background-color: rgba(15, 20, 25, 0.95); border-top: 1px solid #374151; padding: 60px 0 20px; margin-top: 80px; }
+        .article-footer { display: flex; justify-content: space-between; border-top: 1px solid rgba(59,130,246,0.2); padding-top: 15px; }
+        .category { font-size: 12px; padding: 6px 14px; background: rgba(59,130,246,0.2); color: #3b82f6; border-radius: 20px; font-weight: 600; }
+        
+        /* Footer */
+        .footer { background: rgba(10,14,39,0.95); border-top: 3px solid; border-image: linear-gradient(90deg, #3b82f6, #ef4444) 1; padding: 80px 0 30px; margin-top: 80px; }
         .footer-content { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; margin-bottom: 40px; }
-        .footer-section h4 { color: var(--accent-blue); margin-bottom: 15px; }
-        .footer-section p { color: #d1d5db; font-size: 14px; }
+        .footer-section h4 { color: #3b82f6; margin-bottom: 15px; font-size: 16px; }
+        .footer-section p { color: #d1d5db; font-size: 14px; line-height: 1.6; }
         .footer-section ul { list-style: none; }
         .footer-section ul li { color: #d1d5db; font-size: 14px; margin-bottom: 10px; }
         .footer-section a { color: #d1d5db; text-decoration: none; transition: color 0.3s ease; }
-        .footer-section a:hover { color: var(--accent-blue); }
-        .footer-bottom { border-top: 1px solid #374151; padding-top: 20px; text-align: center; color: #d1d5db; }
-        @media (max-width: 768px) { 
-            .matchup-grid, .issues-grid, .dates-content, .topics-grid, .articles-grid { grid-template-columns: 1fr; } 
-            h2 { font-size: 36px; }
-            .hero-title { font-size: 48px; }
+        .footer-section a:hover { color: #3b82f6; }
+        .footer-bottom { border-top: 1px solid rgba(59,130,246,0.2); padding-top: 20px; text-align: center; color: #d1d5db; }
+        
+        @media (max-width: 768px) {
+            .matchup-grid, .issues-grid, .topics-grid, .articles-grid { grid-template-columns: 1fr; }
+            .section-title { font-size: 48px; }
+            .hero-title { font-size: 60px; }
             .nav-menu { gap: 20px; }
         }
     </style>
 </head>
 <body>
+    <!-- Animated Stars Background -->
+    <div class="stars-bg" id="starsBg"></div>
+    
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">Up for Debate</div>
+            <div class="logo">UP FOR DEBATE</div>
             <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#home" class="nav-link active">Home</a></li>
                 <li><a href="#matchup" class="nav-link">The Matchup</a></li>
-                <li><a href="#tour-dates" class="nav-link">Tour Dates</a></li>
+                <li><a href="#tour-dates" class="nav-link">Tour Schedule</a></li>
                 <li><a href="#issues" class="nav-link">Key Issues</a></li>
-                <li><a href="#articles" class="nav-link">Articles</a></li>
+                <li><a href="#articles" class="nav-link">Coverage</a></li>
             </ul>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Up for Debate</h1>
+            <h1 class="hero-title">UP FOR DEBATE</h1>
             <p class="hero-subtitle">Town Hall Tour 2026</p>
             <p class="hero-description">Featuring Scott Jennings and Van Jones</p>
-            <p class="hero-tagline">A Model of Informed Disagreement</p>
-            <a href="#tour-dates" class="cta-button">See Tour Dates</a>
+            <p style="font-size: 20px; margin-bottom: 40px; color: #d1d5db;">A Model of Informed Disagreement</p>
+            <a href="#tour-dates" class="cta-button">See Tour Schedule</a>
         </div>
     </section>
 
+    <!-- The Matchup -->
     <section id="matchup" class="section matchup">
         <div class="container">
-            <h2>The Matchup</h2>
+            <h2 class="section-title">The Matchup</h2>
             <div class="matchup-grid">
-                <div class="matchup-card left-card">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop" alt="Van Jones" class="matchup-image">
+                <div class="matchup-card">
+                    <img src="data:image/jpeg;base64,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" alt="Van Jones" class="matchup-image">
                     <h3>Van Jones</h3>
-                    <p class="political-affiliation left">Progressive Voice</p>
+                    <p class="political-affiliation left">PROGRESSIVE VOICE</p>
                     <div class="bio">
                         <p>Van Jones is a three-time NY Times bestselling author and host of two CNN shows: "The Van Jones Show" and "The Redemption Project."</p>
                         <p>A leading voice in criminal justice reform, he serves as CEO of the REFORM Alliance, founded by Jay-Z and Meek Mill to transform the criminal justice system.</p>
+                        <p>Jones previously served as a senior advisor to President Barack Obama and is widely regarded as a left-of-center political figure.</p>
                     </div>
                 </div>
-                <div class="matchup-card right-card">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop" alt="Scott Jennings" class="matchup-image">
+                <div class="matchup-card">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8NDw8PDw8PDw8PDw8PDw8PDw8PDw8PFRUWFhUVFRUYHSggGBolGxUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDg0OGBAQFy0dGh0tLS0tKy0tLSsrLS4tLSsuLS0uLTctLS0uLS8tLS0tLS0tLS01LS0tLS0tLS0tLS0tLf/AABEIALcBEwMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAAAwECBQYHBAj/xABEEAACAQMBBAcFBAcGBgMAAAAAAQIDBBEhBRIxUQYHE0FhcYEiMpGhsRRyksEjQlJigtHwNHSio7LCQ1ODs9LhJCUz/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAECAwQFBv/EACgRAQACAgEDAwIHAAAAAAAAAAABAgDRIQQxQRIiUQUTYXGBkbHw/9oADAMBAAIRAxEAPwA6CACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAqUAAAAAAAAAAAAAAAAAAAADG7Z23Rs45m3KbWVThrN+fJDa+2qNokpPeqNZjTjxxzfJHPVSrXFSpWqaublJ8ca93lj8itraXpT1Mjd9Lbybbi40YvWMIRjKePGU8pfAx8+kN+9Y3MuOddzdXwjqSW+yJT/aTfrrklq9G6uMYku/zM/uQ3jD+CXZ/Tq4otRuYxrx75QUadTHPiovywvM3fZG1qF7T7ShPeSe7JENOM4S5Si+BY3M+eaDtP1VJhGMVxnzZ6ySWfPQvpDfvWNzLjnXXHnHzaeY0Yd4lDfJMJJEpzw5zXqy4RhFpBZeVlKWdY5L2Tz5X0aQFokakWoSDUABJYgAAAAAAAAAAAABz3pd07rVK06NnUdKhBuDqQxv1ZLKbUv1Y8sa9+TTZTcnvPVvi3q2+bNIp8o26HtPrMSyrW3z+/XeF+CP/bastTpjtC6TjKu6cXxhQXZL4r2vmYRoscS8ViBHLV5fFvLfe34laa+pc4lsZYwnlefB+pKF273cz6J6tdt/b7ClKTzVpLsavPejon6rD9T55RvnVBtn7NfdhJ4p3UcJZ07WOq+K3vgidbhE/LsO2tgwuVvLEKqWku6XhL+fcaLtGwVCThUpqM13Pv8AFPvR1KJq/WJe21tZyqVob9TO5bwUt2cqj5S7opavy5m4VaR1S0pJeVu6XBu1B8fzSPL7gGEdTX3Mh3cXdZbV0e+tSJL16jLy1vTfqNJ4Qm7V09fZqTq1aXfLxPV0s+0VJn3P/9k=" alt="Scott Jennings" class="matchup-image">
                     <h3>Scott Jennings</h3>
-                    <p class="political-affiliation right">Conservative Voice</p>
+                    <p class="political-affiliation right">CONSERVATIVE VOICE</p>
                     <div class="bio">
-                        <p>Scott Jennings is a prominent Republican strategist and CNN senior political commentator, co-founder of the public relations firm RunSwitch.</p>
-                        <p>A former special assistant to President George W. Bush, Jennings provides conservative analysis on-air for CNN and contributes to USA Today and the LA Times.</p>
+                        <p>Scott Jennings is a prominent Republican strategist, CNN senior political commentator, and co-founder of the public relations firm RunSwitch.</p>
+                        <p>A former special assistant to President George W. Bush, and a veteran of four presidential campaigns, Jennings provides conservative analysis on-air for CNN.</p>
+                        <p>He contributes opinion pieces to USA Today and the LA Times, often described as a "black sheep" conservative providing nuanced Republican perspectives.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="section event-overview">
+    <!-- Event Overview -->
+    <section class="section">
         <div class="container">
-            <h2>Event Overview</h2>
-            <p style="margin-bottom: 30px; font-size: 20px; color: var(--accent-blue);"><strong>Up for Debate</strong> is a multi-city live event series designed to model substantive dialogue across political lines.</p>
+            <h2 class="section-title">Event Overview</h2>
+            <p class="section-subtitle">Up for Debate is a multi-city live event series designed to model substantive dialogue across political lines at a pivotal moment in American public life.</p>
             <div class="topics-grid">
-                <div class="topic-item"><h4>Healthcare & Public Health</h4><p>The future of public health policy and healthcare access</p></div>
-                <div class="topic-item"><h4>Women's Health & Rights</h4><p>Women's autonomy and reproductive health issues</p></div>
-                <div class="topic-item"><h4>Immigration & Borders</h4><p>Border security and immigration policy</p></div>
-                <div class="topic-item"><h4>Economic Opportunity</h4><p>Economic opportunity and inequality</p></div>
-                <div class="topic-item"><h4>Democracy & Media</h4><p>The state of democracy, media, and civic trust</p></div>
-                <div class="topic-item"><h4>Foreign Policy</h4><p>America's role in the world</p></div>
+                <div class="topic-item">
+                    <h4>Healthcare & Public Health</h4>
+                    <p>The future of public health policy and healthcare access</p>
+                </div>
+                <div class="topic-item">
+                    <h4>Women's Health & Rights</h4>
+                    <p>Women's autonomy and reproductive health issues</p>
+                </div>
+                <div class="topic-item">
+                    <h4>Immigration & Borders</h4>
+                    <p>Border security and immigration policy</p>
+                </div>
+                <div class="topic-item">
+                    <h4>Economic Opportunity</h4>
+                    <p>Economic opportunity and inequality</p>
+                </div>
+                <div class="topic-item">
+                    <h4>Democracy & Media</h4>
+                    <p>The state of democracy, media, and civic trust</p>
+                </div>
+                <div class="topic-item">
+                    <h4>Foreign Policy</h4>
+                    <p>America's role in the world</p>
+                </div>
             </div>
         </div>
     </section>
 
+    <!-- Tour Schedule with Map -->
     <section id="tour-dates" class="section tour-dates">
         <div class="container">
-            <h2>2026 Tour Schedule</h2>
-            <div class="dates-content">
-                <div class="map-container"><p style="padding: 20px; color: white;">Map placeholder - 6 Confirmed Cities</p></div>
-                <div class="tour-events">
-                    <h3 style="color: var(--accent-red); margin-bottom: 20px;">Confirmed Dates</h3>
-                    <div class="tour-event"><div class="event-number">1</div><div class="event-details"><h4>Boston, MA</h4><p class="date">Thursday, September 10th</p><p class="venue">Emerson Colonial Theatre</p></div></div>
-                    <div class="tour-event"><div class="event-number">2</div><div class="event-details"><h4>Detroit, MI</h4><p class="date">Wednesday, September 16th</p><p class="venue">Fisher Theatre</p></div></div>
-                    <div class="tour-event"><div class="event-number">3</div><div class="event-details"><h4>New York, NY</h4><p class="date">Wednesday, September 23rd</p><p class="venue">Grand Theatre @ Hammerstein Ballroom</p></div></div>
-                    <div class="tour-event"><div class="event-number">4</div><div class="event-details"><h4>Atlanta, GA</h4><p class="date">Thursday, October 8th</p><p class="venue">Pullman Yards</p></div></div>
-                    <div class="tour-event"><div class="event-number">5</div><div class="event-details"><h4>Washington, DC</h4><p class="date">Thursday, October 15th</p><p class="venue">Warner Theatre</p></div></div>
-                    <div class="tour-event"><div class="event-number">6</div><div class="event-details"><h4>San Francisco, CA</h4><p class="date">Monday, October 19th - Thursday, October 22nd</p><p class="venue">Golden Gate Theatre</p></div></div>
+            <h2 class="section-title">2026 Tour Schedule</h2>
+            <p class="section-subtitle">Six confirmed cities bringing substantive dialogue to communities across America</p>
+            
+            <!-- Interactive Map -->
+            <div id="map"></div>
+            
+            <div class="map-legend">
+                <h3 style="margin-bottom: 20px; color: #fff;">Tour Locations</h3>
+                <div class="legend-item">
+                    <div class="legend-dot confirmed"></div>
+                    <span>Confirmed Dates</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-dot potential"></div>
+                    <span>Additional Confirmed Cities (New York, Detroit, Atlanta)</span>
+                </div>
+            </div>
+
+            <!-- Tour Events -->
+            <div class="tour-events">
+                <h3 style="color: #fff; margin-bottom: 30px;">Confirmed Tour Dates</h3>
+                <div class="tour-event">
+                    <div class="event-number">1</div>
+                    <div class="event-details">
+                        <h4>Boston, MA</h4>
+                        <p class="date">Thursday, September 10th</p>
+                        <p class="venue">Emerson Colonial Theatre</p>
+                    </div>
+                </div>
+                <div class="tour-event">
+                    <div class="event-number">2</div>
+                    <div class="event-details">
+                        <h4>Detroit, MI</h4>
+                        <p class="date">Wednesday, September 16th</p>
+                        <p class="venue">Fisher Theatre</p>
+                    </div>
+                </div>
+                <div class="tour-event">
+                    <div class="event-number">3</div>
+                    <div class="event-details">
+                        <h4>New York, NY</h4>
+                        <p class="date">Wednesday, September 23rd</p>
+                        <p class="venue">Grand Theatre @ Hammerstein Ballroom</p>
+                    </div>
+                </div>
+                <div class="tour-event">
+                    <div class="event-number">4</div>
+                    <div class="event-details">
+                        <h4>Atlanta, GA</h4>
+                        <p class="date">Thursday, October 8th</p>
+                        <p class="venue">Pullman Yards</p>
+                    </div>
+                </div>
+                <div class="tour-event">
+                    <div class="event-number">5</div>
+                    <div class="event-details">
+                        <h4>Washington, DC</h4>
+                        <p class="date">Thursday, October 15th</p>
+                        <p class="venue">Warner Theatre</p>
+                    </div>
+                </div>
+                <div class="tour-event">
+                    <div class="event-number">6</div>
+                    <div class="event-details">
+                        <h4>San Francisco, CA</h4>
+                        <p class="date">Monday, October 19th - Thursday, October 22nd</p>
+                        <p class="venue">Golden Gate Theatre</p>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Key Issues -->
     <section id="issues" class="section key-issues">
         <div class="container">
-            <h2>Key Debate Topics</h2>
+            <h2 class="section-title">Key Debate Topics</h2>
             <div class="issues-grid">
                 <div class="issue-card">
                     <h3>Healthcare & Public Health</h3>
                     <p class="issue-intro">The future of public health policy and healthcare access in America.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"Healthcare is a human right. We need to ensure every American has access to affordable, quality healthcare regardless of zip code or income level."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"Market-based solutions and competition drive innovation and lower costs. We should focus on reducing regulatory burden and empowering consumers."</blockquote>
                     </div>
                 </div>
+
                 <div class="issue-card">
                     <h3>Women's Health & Rights</h3>
                     <p class="issue-intro">Women's autonomy, reproductive health, and workplace equality.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"Women deserve freedom to make their own decisions about their bodies. Equal pay for equal work is essential for gender equity."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"We should protect life while supporting women's economic advancement. Policies that strengthen families benefit all Americans."</blockquote>
                     </div>
                 </div>
+
                 <div class="issue-card">
                     <h3>Immigration & Border Security</h3>
                     <p class="issue-intro">Border security, immigration policy, and America's relationship with immigration.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"America is built on immigration. We need humane policies that provide pathways to citizenship while maintaining security."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"Strong borders are essential for national security and the rule of law. We must enforce existing laws while creating legal pathways."</blockquote>
                     </div>
                 </div>
+
                 <div class="issue-card">
                     <h3>Economic Opportunity & Inequality</h3>
                     <p class="issue-intro">Addressing economic inequality and creating pathways to prosperity.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"We must address systemic inequalities. Investments in education, infrastructure, and small business create real opportunity."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"Economic growth comes from reducing government barriers. Lower taxes and smart deregulation expand opportunity for working families."</blockquote>
                     </div>
                 </div>
+
                 <div class="issue-card">
                     <h3>Democracy, Media & Civic Trust</h3>
                     <p class="issue-intro">Strengthening democratic institutions, media integrity, and public trust.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"Democracy requires an informed citizenry and free press. We must combat misinformation while protecting free speech."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"Election integrity and constitutional order must be protected. We need election security and a media landscape respecting diverse viewpoints."</blockquote>
                     </div>
                 </div>
+
                 <div class="issue-card">
                     <h3>Foreign Policy & Global Role</h3>
                     <p class="issue-intro">America's position in the world and international responsibilities.</p>
                     <div class="position left">
                         <h4 class="left-position">Van Jones - Progressive Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop" alt="Van Jones" class="position-img">
                         <blockquote class="quote">"America's global leadership requires diplomacy and alliance-building. We must address climate change and promote human rights multilaterally."</blockquote>
                     </div>
                     <div class="position right">
                         <h4 class="right-position">Scott Jennings - Conservative Perspective</h4>
-                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop" alt="Scott Jennings" class="position-img">
                         <blockquote class="quote">"America First means protecting our interests and citizens. We should maintain strong alliances but not overextend abroad. Peace through strength."</blockquote>
                     </div>
                 </div>
@@ -281,38 +394,62 @@
         </div>
     </section>
 
+    <!-- Articles -->
     <section id="articles" class="section articles">
         <div class="container">
-            <h2>Tour Coverage & Analysis</h2>
+            <h2 class="section-title">Tour Coverage & Analysis</h2>
             <p class="section-subtitle">In-depth reporting and commentary from the Up for Debate tour</p>
             <div class="articles-grid">
                 <div class="article-card">
-                    <div class="article-header"><h3>Boston Town Hall: Opening Remarks and First Impressions</h3><p class="article-meta">September 10, 2026 | Boston, MA</p></div>
+                    <div class="article-header">
+                        <h3>Boston Town Hall: Opening Remarks and First Impressions</h3>
+                        <p class="article-meta">September 10, 2026 | Boston, MA</p>
+                    </div>
                     <p class="article-excerpt">Coverage of the inaugural Boston event featuring Scott Jennings and Van Jones discussing the state of American politics and setting the tone for the tour ahead...</p>
                     <div class="article-footer"><span class="category">Event Coverage</span></div>
                 </div>
+
                 <div class="article-card">
-                    <div class="article-header"><h3>Healthcare Debate Deep Dive: What Each Side is Really Arguing</h3><p class="article-meta">In Progress | Analysis</p></div>
+                    <div class="article-header">
+                        <h3>Healthcare Debate Deep Dive: What Each Side is Really Arguing</h3>
+                        <p class="article-meta">In Progress | Analysis</p>
+                    </div>
                     <p class="article-excerpt">An analysis of the healthcare positions, breaking down the fundamental policy differences and common ground between progressive and conservative approaches...</p>
                     <div class="article-footer"><span class="category">Issue Analysis</span></div>
                 </div>
+
                 <div class="article-card">
-                    <div class="article-header"><h3>Immigration Policy: Finding Common Ground</h3><p class="article-meta">Coming Soon | Investigation</p></div>
+                    <div class="article-header">
+                        <h3>Immigration Policy: Finding Common Ground</h3>
+                        <p class="article-meta">Coming Soon | Investigation</p>
+                    </div>
                     <p class="article-excerpt">An investigative look at where left and right might find agreement on immigration reform, examining data and real-world policy outcomes...</p>
                     <div class="article-footer"><span class="category">Investigation</span></div>
                 </div>
+
                 <div class="article-card">
-                    <div class="article-header"><h3>The State of Political Discourse: Lessons from the Tour</h3><p class="article-meta">Coming Soon | Commentary</p></div>
+                    <div class="article-header">
+                        <h3>The State of Political Discourse: Lessons from the Tour</h3>
+                        <p class="article-meta">Coming Soon | Commentary</p>
+                    </div>
                     <p class="article-excerpt">Reflections on what the Up for Debate tour reveals about the state of American political discourse and substantive dialogue across partisan lines...</p>
                     <div class="article-footer"><span class="category">Commentary</span></div>
                 </div>
+
                 <div class="article-card">
-                    <div class="article-header"><h3>Women's Rights in 2026: Progressive vs. Conservative</h3><p class="article-meta">Coming Soon | Feature</p></div>
+                    <div class="article-header">
+                        <h3>Women's Rights in 2026: Progressive vs. Conservative</h3>
+                        <p class="article-meta">Coming Soon | Feature</p>
+                    </div>
                     <p class="article-excerpt">A comprehensive feature examining how both sides approach issues of women's health, rights, and economic opportunity in the current climate...</p>
                     <div class="article-footer"><span class="category">Feature</span></div>
                 </div>
+
                 <div class="article-card">
-                    <div class="article-header"><h3>Economic Inequality: Data-Driven Solutions from Left and Right</h3><p class="article-meta">Coming Soon | Analysis</p></div>
+                    <div class="article-header">
+                        <h3>Economic Inequality: Data-Driven Solutions from Left and Right</h3>
+                        <p class="article-meta">Coming Soon | Analysis</p>
+                    </div>
                     <p class="article-excerpt">This analysis examines the empirical evidence behind different economic approaches and evaluates their real-world effectiveness...</p>
                     <div class="article-footer"><span class="category">Analysis</span></div>
                 </div>
@@ -320,19 +457,70 @@
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-section"><h4>About Up for Debate</h4><p>A town hall tour featuring substantive dialogue across political lines, bringing together progressive and conservative voices for informed disagreement.</p></div>
-                <div class="footer-section"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#matchup">The Matchup</a></li><li><a href="#tour-dates">Tour Dates</a></li><li><a href="#issues">Key Issues</a></li></ul></div>
-                <div class="footer-section"><h4>Featured Guests</h4><ul><li>Van Jones</li><li>Scott Jennings</li></ul></div>
-                <div class="footer-section"><h4>Contact</h4><p>For event inquiries and media coverage:<br><strong>Jack Stankey</strong><br>jackstankey26@outlook.com</p></div>
+                <div class="footer-section">
+                    <h4>About Up for Debate</h4>
+                    <p>A town hall tour featuring substantive dialogue across political lines, bringing together progressive and conservative voices for informed disagreement.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#matchup">The Matchup</a></li>
+                        <li><a href="#tour-dates">Tour Dates</a></li>
+                        <li><a href="#issues">Key Issues</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Featured Guests</h4>
+                    <ul>
+                        <li>Van Jones</li>
+                        <li>Scott Jennings</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p>For event inquiries and media coverage:<br><strong>Jack Stankey</strong><br>jackstankey26@outlook.com</p>
+                </div>
             </div>
             <div class="footer-bottom"><p>&copy; 2026 Up for Debate. All rights reserved.</p></div>
         </div>
     </footer>
 
     <script>
+        // Initialize map
+        const map = L.map('map').setView([39.8, -95.5], 4);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Tour locations with confirmed dates
+        const locations = [
+            { name: 'Boston, MA', lat: 42.3601, lng: -71.0589, date: 'September 10', confirmed: true },
+            { name: 'Detroit, MI', lat: 42.3314, lng: -83.0458, date: 'September 16', confirmed: true },
+            { name: 'New York, NY', lat: 40.7128, lng: -74.0060, date: 'September 23', confirmed: true },
+            { name: 'Atlanta, GA', lat: 33.7490, lng: -84.3880, date: 'October 8', confirmed: true },
+            { name: 'Washington, DC', lat: 38.9072, lng: -77.0369, date: 'October 15', confirmed: true },
+            { name: 'San Francisco, CA', lat: 37.7749, lng: -122.4194, date: 'October 19-22', confirmed: true }
+        ];
+
+        // Add markers
+        locations.forEach(loc => {
+            const icon = L.divIcon({
+                className: 'custom-icon',
+                html: '<div style="background: linear-gradient(135deg, #3b82f6, #ef4444); width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.3);"></div>',
+                iconSize: [20, 20]
+            });
+
+            L.marker([loc.lat, loc.lng], { icon: icon })
+                .bindPopup(`<div style="color: #0a0e27; font-weight: 600;"><strong>${loc.name}</strong><br>${loc.date}</div>`)
+                .addTo(map);
+        });
+
         // Smooth scroll navigation
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -345,14 +533,13 @@
             });
         });
 
-        // Update active nav link on scroll
+        // Update active nav link
         window.addEventListener('scroll', updateActiveNav);
-
         function updateActiveNav() {
             const sections = document.querySelectorAll('section[id]');
             const navLinks = document.querySelectorAll('.nav-link');
-
             let current = '';
+
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 if (pageYOffset >= sectionTop - 200) {
@@ -368,29 +555,23 @@
             });
         }
 
-        // Intersection Observer for fade-in animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+        // Animated stars background
+        function createStars() {
+            const starsBg = document.getElementById('starsBg');
+            for (let i = 0; i < 150; i++) {
+                const star = document.createElement('div');
+                star.className = `star ${Math.random() > 0.5 ? 'blue' : 'red'}`;
+                star.textContent = '★';
+                star.style.fontSize = Math.random() * 20 + 10 + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animation = `pulse ${Math.random() * 3 + 2}s infinite`;
+                starsBg.appendChild(star);
+            }
+        }
+        createStars();
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.matchup-card, .topic-item, .issue-card, .article-card, .tour-event').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-            observer.observe(el);
-        });
-
-        // Initialize on page load
+        // Initialize
         window.addEventListener('load', updateActiveNav);
     </script>
 </body>

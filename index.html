@@ -650,13 +650,10 @@
         #map {
             height: 500px;
             border-radius: 12px;
-            border: 2px solid rgba(59, 130, 246, 0.5);
-            overflow: hidden;
-            background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(10, 28, 61, 0.4) 50%, rgba(30, 30, 50, 0.3) 100%);
+            border: 3px solid rgba(59, 130, 246, 0.6);
+            overflow: visible;
+            background: linear-gradient(135deg, #0a1c3d 0%, #001f3f 50%, #0a1a2e 100%);
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .map-background {
             position: absolute;
@@ -665,57 +662,63 @@
             width: 100%;
             height: 100%;
             background:
-                radial-gradient(ellipse 400px 300px at 15% 25%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
-                radial-gradient(ellipse 350px 280px at 85% 75%, rgba(239, 68, 68, 0.2) 0%, transparent 50%);
-            z-index: 0;
+                radial-gradient(ellipse 500px 350px at 10% 30%, rgba(59, 130, 246, 0.25) 0%, transparent 50%),
+                radial-gradient(ellipse 450px 320px at 90% 70%, rgba(239, 68, 68, 0.25) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 1;
         }
         .map-container {
             position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             z-index: 10;
+            pointer-events: none;
         }
         .map-marker {
             position: absolute;
             transform: translate(-50%, -50%);
             cursor: pointer;
+            pointer-events: auto;
             z-index: 20;
         }
         .map-marker svg {
-            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+            display: block;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.6));
             transition: filter 0.3s ease;
         }
         .map-marker:hover svg {
-            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6)) brightness(1.2);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.8)) brightness(1.3);
         }
         .map-tooltip {
             position: absolute;
-            bottom: 60px;
+            bottom: 65px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.95);
             color: #fff;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: bold;
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 30;
+            transition: opacity 0.2s ease;
+            z-index: 50;
         }
         .map-marker:hover .map-tooltip {
             opacity: 1;
         }
         .map-tooltip-city {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .map-tooltip-date {
             display: block;
-            font-size: 12px;
-            opacity: 0.8;
+            font-size: 11px;
+            opacity: 0.85;
         }
         /* Media Coverage */
         .media-section {
@@ -1010,6 +1013,81 @@
         </div>
     </section>
 
+    <!-- Key Issues -->
+    <section id="issues" class="issues">
+        <div class="container">
+            <h2>Key Debate Topics</h2>
+            <div class="issues-grid">
+                <div class="issue-card">
+                    <h3>Economic Policy</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Advocates for progressive taxation, investment in green jobs, and robust social safety nets to reduce inequality and build shared prosperity.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Supports lower taxes, deregulation, and free market solutions to drive economic growth, innovation, and business expansion.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Healthcare</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Advocates for universal healthcare access and stronger government role in ensuring equitable, affordable health coverage for all Americans.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Supports market-based healthcare solutions with limited government intervention, individual choice, and competition to lower costs.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Climate Change</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Emphasizes urgent action through renewable energy transition, environmental regulations, and just transition for workers affected by change.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Balances environmental concerns with energy independence and economic considerations, favoring innovation over mandates.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Immigration</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Supports inclusive immigration policies with pathways to citizenship, humanitarian protections, and family unity provisions.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Emphasizes border security, rule of law, and managed immigration that prioritizes legal pathways and enforces existing regulations.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Education Reform</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Calls for increased public school funding, equity initiatives, student debt relief, and eliminating educational disparities by zip code.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Advocates for school choice, parental control, merit-based accountability, and competitive education options for families.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Criminal Justice</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Pursues systemic reform including police accountability, sentencing reform, rehabilitation focus, and breaking cycles of incarceration.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Prioritizes public safety, law enforcement support, swift justice, and maintaining strong deterrence against criminal activity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Weekly Recaps -->
     <section id="recaps" class="recaps-section">
         <div class="container">
@@ -1145,80 +1223,6 @@
         </div>
     </section>
 
-    <!-- Key Issues -->
-    <section id="issues" class="issues">
-        <div class="container">
-            <h2>Key Debate Topics</h2>
-            <div class="issues-grid">
-                <div class="issue-card">
-                    <h3>Economic Policy</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Advocates for progressive taxation, investment in green jobs, and robust social safety nets to reduce inequality and build shared prosperity.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Supports lower taxes, deregulation, and free market solutions to drive economic growth, innovation, and business expansion.</p>
-                    </div>
-                </div>
-                <div class="issue-card">
-                    <h3>Healthcare</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Advocates for universal healthcare access and stronger government role in ensuring equitable, affordable health coverage for all Americans.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Supports market-based healthcare solutions with limited government intervention, individual choice, and competition to lower costs.</p>
-                    </div>
-                </div>
-                <div class="issue-card">
-                    <h3>Climate Change</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Emphasizes urgent action through renewable energy transition, environmental regulations, and just transition for workers affected by change.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Balances environmental concerns with energy independence and economic considerations, favoring innovation over mandates.</p>
-                    </div>
-                </div>
-                <div class="issue-card">
-                    <h3>Immigration</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Supports inclusive immigration policies with pathways to citizenship, humanitarian protections, and family unity provisions.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Emphasizes border security, rule of law, and managed immigration that prioritizes legal pathways and enforces existing regulations.</p>
-                    </div>
-                </div>
-                <div class="issue-card">
-                    <h3>Education Reform</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Calls for increased public school funding, equity initiatives, student debt relief, and eliminating educational disparities by zip code.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Advocates for school choice, parental control, merit-based accountability, and competitive education options for families.</p>
-                    </div>
-                </div>
-                <div class="issue-card">
-                    <h3>Criminal Justice</h3>
-                    <div class="stance">
-                        <div class="stance-label progressive">Van Jones Position</div>
-                        <p class="stance-text">Pursues systemic reform including police accountability, sentencing reform, rehabilitation focus, and breaking cycles of incarceration.</p>
-                    </div>
-                    <div class="stance">
-                        <div class="stance-label conservative">Scott Jennings Position</div>
-                        <p class="stance-text">Prioritizes public safety, law enforcement support, swift justice, and maintaining strong deterrence against criminal activity.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Tour Schedule -->
     <section id="tour" class="tour-section">

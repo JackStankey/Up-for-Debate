@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UP FOR DEBATE - 2026 Town Hall Tour</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <style>
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+            }
+        }
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 5px #3b82f6, 0 0 10px #3b82f6;
+            }
+            50% {
+                text-shadow: 0 0 10px #3b82f6, 0 0 20px #3b82f6, 0 0 30px #ef4444;
+            }
+        }
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes expandBorder {
+            from {
+                border-width: 2px;
+            }
+            to {
+                border-width: 4px;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(15, 20, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #3b82f6 0%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: #e0e0e0;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #3b82f6, #ef4444);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+        .nav-links a.active,
+        .nav-links a:hover {
+            color: #3b82f6;
+        }
+        /* Hero Section */
+        .hero {
+            margin-top: 70px;
+            padding: 6rem 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6 0%, #ef4444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite, fadeInDown 1s ease-out;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            animation: pulse 1.5s infinite;
+        }
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        /* Section Styling */
+        section {
+            padding: 4rem 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            text-align: center;
+            color: #fff;
+            animation: fadeInDown 0.8s ease-out both;
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #ef4444);
+            border-radius: 2px;
+            animation: expandBorder 0.8s ease-out both 0.3s;
+        }
+        /* The Matchup */
+        .matchup {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .matchup-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        .matchup-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+        .matchup-card:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        .matchup-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+        .profile-frame {
+            width: 280px;
+            height: 374px;
+            margin: 0 auto 2rem;
+            border: 8px solid;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.5s ease;
+        }
+        .matchup-card:nth-child(1) .profile-frame {
+            border-color: #3b82f6;
+            animation: slideInLeft 0.8s ease-out 0.2s both;
+        }
+        .matchup-card:nth-child(2) .profile-frame {
+            border-color: #ef4444;
+            animation: slideInRight 0.8s ease-out 0.2s both;
+        }
+        .profile-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .matchup-card:hover .profile-frame img {
+            transform: scale(1.05);
+        }
+        .matchup-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        .matchup-card .role {
+            font-size: 0.95rem;
+            color: #a0a0a0;
+            margin-bottom: 1.5rem;
+        }
+        .matchup-card p {
+            color: #c0c0c0;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+        /* Weekly Recaps */
+        .recaps-section {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .recap-container {
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        .recap-header {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+        .recap-header:hover {
+            background: rgba(59, 130, 246, 0.25);
+            border-left-width: 6px;
+        }
+        .recap-header h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .recap-header p {
+            color: #a0a0a0;
+        }
+        .argument-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .argument-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .argument-card:nth-child(1) {
+            border-left: 4px solid #3b82f6;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+        .argument-card:nth-child(2) {
+            border-left: 4px solid #ef4444;
+            animation: slideInRight 0.6s ease-out both;
+        }
+        .argument-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .argument-card h4 {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        .argument-card p {
+            color: #c0c0c0;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .preview-section {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px dashed rgba(34, 197, 94, 0.5);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .preview-section h4 {
+            color: #4ade80;
+            margin-bottom: 0.8rem;
+        }
+        .preview-section p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+        /* Key Issues Section */
+        .issues {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .issues-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .issue-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        .issue-card:nth-child(1) { animation-delay: 0.1s; }
+        .issue-card:nth-child(2) { animation-delay: 0.2s; }
+        .issue-card:nth-child(3) { animation-delay: 0.3s; }
+        .issue-card:nth-child(4) { animation-delay: 0.4s; }
+        .issue-card:nth-child(5) { animation-delay: 0.5s; }
+        .issue-card:nth-child(6) { animation-delay: 0.6s; }
+        .issue-card:nth-child(odd) {
+            border-color: #3b82f6;
+        }
+        .issue-card:nth-child(even) {
+            border-color: #ef4444;
+        }
+        .issue-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        .issue-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .stance {
+            margin-bottom: 1.5rem;
+        }
+        .stance-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+        }
+        .stance-label.progressive {
+            color: #3b82f6;
+        }
+        .stance-label.conservative {
+            color: #ef4444;
+        }
+        .stance-text {
+            color: #c0c0c0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        /* Tour Schedule */
+        .tour-section {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .tour-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .tour-events {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .tour-event {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid #3b82f6;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s;
+            cursor: pointer;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+        .tour-event:nth-child(1) { animation-delay: 0s; }
+        .tour-event:nth-child(2) { animation-delay: 0.1s; }
+        .tour-event:nth-child(3) { animation-delay: 0.2s; }
+        .tour-event:nth-child(4) { animation-delay: 0.3s; }
+        .tour-event:nth-child(5) { animation-delay: 0.4s; }
+        .tour-event:nth-child(6) { animation-delay: 0.5s; }
+        .tour-event:hover {
+            transform: translateX(10px);
+            background: rgba(255, 255, 255, 0.12);
+            border-left-width: 6px;
+        }
+        .tour-event.conservative {
+            border-left-color: #ef4444;
+        }
+        .tour-event h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+        .tour-event .date {
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+        .tour-event .venue {
+            font-size: 0.85rem;
+            color: #909090;
+            margin-top: 0.3rem;
+        }
+        #map {
+            height: 500px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+        /* Media Coverage */
+        .media-section {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .media-city {
+            margin-bottom: 3rem;
+        }
+        .media-city h3 {
+            color: #3b82f6;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        .article-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .article-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: transform 0.3s, border-color 0.3s;
+            cursor: pointer;
+            animation: fadeInUp 0.6s ease-out both;
+        }
+        .article-card:nth-child(1) { animation-delay: 0.1s; }
+        .article-card:nth-child(2) { animation-delay: 0.2s; }
+        .article-card:nth-child(3) { animation-delay: 0.3s; }
+        .article-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            border-color: rgba(59, 130, 246, 0.7);
+            box-shadow: 0 15px 40px rgba(59, 130, 246, 0.3);
+        }
+        .article-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+        .article-card p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .article-card a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        .article-card a:hover {
+            color: #60a5fa;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            overflow-y: auto;
+        }
+        .modal.show {
+            display: block;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            margin: 5% auto;
+            padding: 2rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .close-modal {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-modal:hover {
+            color: #fff;
+        }
+        .modal h2 {
+            text-align: left;
+            margin-bottom: 1.5rem;
+        }
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+        .modal-section h3 {
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+        .modal-section p {
+            color: #c0c0c0;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+        /* Social Media Section */
+        .social-section {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .social-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.3s;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        .social-card:nth-child(1) { animation-delay: 0.1s; }
+        .social-card:nth-child(2) { animation-delay: 0.2s; }
+        .social-card:nth-child(3) { animation-delay: 0.3s; }
+        .social-card:nth-child(4) { animation-delay: 0.4s; }
+        .social-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.3);
+        }
+        .social-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #ef4444 100%);
+            padding: 1rem;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .social-post {
+            padding: 1.5rem;
+        }
+        .social-post h4 {
+            color: #fff;
+            margin-bottom: 0.8rem;
+        }
+        .social-post p {
+            color: #c0c0c0;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .social-engagement {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .engagement-stat {
+            text-align: center;
+        }
+        .engagement-stat .count {
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .engagement-stat .label {
+            color: #909090;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.5);
+            text-align: center;
+            padding: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #808080;
+        }
+        .footer p {
+            margin-bottom: 0.5rem;
+        }
+        /* Image Optimization */
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Scroll Animation Trigger */
+        section {
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        section:nth-of-type(1) { animation-delay: 0s; }
+        section:nth-of-type(2) { animation-delay: 0.1s; }
+        section:nth-of-type(3) { animation-delay: 0.2s; }
+        section:nth-of-type(4) { animation-delay: 0.3s; }
+        section:nth-of-type(5) { animation-delay: 0.4s; }
+        section:nth-of-type(6) { animation-delay: 0.5s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .matchup {
+                grid-template-columns: 1fr;
+            }
+            .argument-grid {
+                grid-template-columns: 1fr;
+            }
+            .tour-container {
+                grid-template-columns: 1fr;
+            }
+            .issues-grid {
+                grid-template-columns: 1fr;
+            }
+            .article-grid {
+                grid-template-columns: 1fr;
+            }
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+            h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">UP FOR DEBATE</div>
+            <ul class="nav-links">
+                <li><a href="#matchup" class="nav-link">The Matchup</a></li>
+                <li><a href="#recaps" class="nav-link">Weekly Recaps</a></li>
+                <li><a href="#issues" class="nav-link">Key Issues</a></li>
+                <li><a href="#tour" class="nav-link">Tour Schedule</a></li>
+                <li><a href="#media" class="nav-link">Media</a></li>
+                <li><a href="#social" class="nav-link">Social</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>UP FOR DEBATE</h1>
+        <p>A 2026 Town Hall Tour Featuring Progressive and Conservative Perspectives</p>
+        <button class="cta-button" onclick="document.getElementById('tour').scrollIntoView({behavior: 'smooth'})">Explore the Tour</button>
+    </section>
+
+    <!-- The Matchup -->
+    <section id="matchup">
+        <div class="container">
+            <h2>The Matchup</h2>
+            <div class="matchup">
+                <div class="matchup-card">
+                    <div class="profile-frame">
+                        <img src="van jones .jpg" alt="Van Jones" loading="lazy">
+                    </div>
+                    <h3>Van Jones</h3>
+                    <p class="role">Progressive Voice</p>
+                    <p>Three-time NY Times bestselling author, CNN host, and CEO of the REFORM Alliance advocating for criminal justice reform and systemic change.</p>
+                </div>
+                <div class="matchup-card">
+                    <div class="profile-frame">
+                        <img src="scott jennings .avif" alt="Scott Jennings" loading="lazy">
+                    </div>
+                    <h3>Scott Jennings</h3>
+                    <p class="role">Conservative Voice</p>
+                    <p>Prominent Republican strategist, CNN senior political commentator, and co-founder of RunSwitch providing conservative analysis on key issues.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Weekly Recaps -->
+    <section id="recaps" class="recaps-section">
+        <div class="container">
+            <h2>Weekly Recaps & Previews</h2>
+
+            <!-- Boston Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 Boston, MA - Emerson Colonial Theatre</h3>
+                    <p>Thursday, September 10th, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"Healthcare is a fundamental right. We're seeing families bankrupted by medical debt while other developed nations guarantee coverage. We need to invest in public health infrastructure and ensure no American chooses between medicine and rent."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"While healthcare access matters, government-run systems lead to inefficiency and delayed care. We should increase competition, lower costs through market forces, and allow individuals to choose plans that fit their needs without government mandates."</p>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Next Week Preview: Detroit, MI</h4>
+                    <p><strong>Key Topics:</strong> Economic inequality, manufacturing jobs, and labor policy. Watch for debate on trade agreements and worker protections vs. business competitiveness.</p>
+                </div>
+            </div>
+
+            <!-- Detroit Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 Detroit, MI - Fisher Theatre</h3>
+                    <p>Wednesday, September 16th, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"We can't abandon our manufacturing base. Green jobs in electric vehicles and renewable energy are the future. We need targeted investment in communities hit by deindustrialization and retraining programs that actually support workers."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"Manufacturing thrives when government gets out of the way. Over-regulation and high labor costs drive jobs overseas. We should cut corporate taxes, reduce red tape, and let businesses grow organically rather than picking winners and losers."</p>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Next Week Preview: New York, NY</h4>
+                    <p><strong>Key Topics:</strong> Education policy, student debt, and institutional reform. Expect discussion of standardized testing, charter schools, and federal education funding priorities.</p>
+                </div>
+            </div>
+
+            <!-- New York Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 New York, NY - Grand Theatre @ Hammerstein Ballroom</h3>
+                    <p>Wednesday, September 23rd, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"Educational equity means the zip code you're born in shouldn't determine your future. We need to fully fund schools in underserved communities, address the student debt crisis that's crippling a generation, and make higher education affordable."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"Parents should have choice in education. School choice programs and charter schools empower families to find the best fit for their children. We should hold institutions accountable for outcomes, not just throw more money at failing systems."</p>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Next Week Preview: Atlanta, GA</h4>
+                    <p><strong>Key Topics:</strong> Criminal justice reform, police accountability, and sentencing policy. Heated debate expected on systemic racism in policing and incarceration disparities.</p>
+                </div>
+            </div>
+
+            <!-- Atlanta Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 Atlanta, GA - Pullman Yards</h3>
+                    <p>Thursday, October 8th, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"We are the REFORM Alliance. Criminal justice isn't just about punishment—it's about rehabilitation and breaking cycles. We need to address sentencing disparities, defund mass incarceration, and invest in community safety with real accountability."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"We can support police while demanding accountability. The answer isn't defunding law enforcement—it's better training and swift justice. We should focus on violent crime, protect communities, and ensure sentences reflect the severity of crimes committed."</p>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Next Week Preview: Washington, DC</h4>
+                    <p><strong>Key Topics:</strong> Immigration policy, border security, and foreign policy. Discussion on asylum claims, pathway to citizenship, and America's role in global affairs.</p>
+                </div>
+            </div>
+
+            <!-- Washington DC Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 Washington, DC - Warner Theatre</h3>
+                    <p>Thursday, October 15th, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"America is a nation of immigrants. We need comprehensive reform that secures borders while creating pathways to citizenship for people contributing to our economy. Separating families and criminalizing migration isn't the answer."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"We must have controlled borders and follow the rule of law. Asylum can be granted, but we can't have open borders. We should prioritize legal immigration that matches labor market needs and enforce existing laws fairly."</p>
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h4>Next Week Preview: San Francisco, CA</h4>
+                    <p><strong>Key Topics:</strong> Climate change, green energy transition, and environmental policy. Debate on carbon pricing, renewable energy mandates, and economic impacts of climate action.</p>
+                </div>
+            </div>
+
+            <!-- San Francisco Stop -->
+            <div class="recap-container">
+                <div class="recap-header">
+                    <h3>📍 San Francisco, CA - Golden Gate Theatre</h3>
+                    <p>Monday, October 19th - Thursday, October 22nd, 2026</p>
+                </div>
+                <div class="argument-grid">
+                    <div class="argument-card">
+                        <h4>Van Jones Opening Statement</h4>
+                        <p>"Climate change is the defining issue of our time. We have the technology—we need the political will. Green jobs are already outpacing fossil fuel jobs. We must transition now with just policies that don't leave workers behind."</p>
+                    </div>
+                    <div class="argument-card">
+                        <h4>Scott Jennings Response</h4>
+                        <p>"We care about the environment AND energy independence. Mandates that shut down American energy while importing from countries with worse environmental records don't help. Innovation, not regulation, will drive cleaner solutions."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Issues -->
+    <section id="issues" class="issues">
+        <div class="container">
+            <h2>Key Debate Topics</h2>
+            <div class="issues-grid">
+                <div class="issue-card">
+                    <h3>Economic Policy</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Advocates for progressive taxation, investment in green jobs, and robust social safety nets to reduce inequality and build shared prosperity.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Supports lower taxes, deregulation, and free market solutions to drive economic growth, innovation, and business expansion.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Healthcare</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Advocates for universal healthcare access and stronger government role in ensuring equitable, affordable health coverage for all Americans.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Supports market-based healthcare solutions with limited government intervention, individual choice, and competition to lower costs.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Climate Change</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Emphasizes urgent action through renewable energy transition, environmental regulations, and just transition for workers affected by change.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Balances environmental concerns with energy independence and economic considerations, favoring innovation over mandates.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Immigration</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Supports inclusive immigration policies with pathways to citizenship, humanitarian protections, and family unity provisions.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Emphasizes border security, rule of law, and managed immigration that prioritizes legal pathways and enforces existing regulations.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Education Reform</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Calls for increased public school funding, equity initiatives, student debt relief, and eliminating educational disparities by zip code.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Advocates for school choice, parental control, merit-based accountability, and competitive education options for families.</p>
+                    </div>
+                </div>
+                <div class="issue-card">
+                    <h3>Criminal Justice</h3>
+                    <div class="stance">
+                        <div class="stance-label progressive">Van Jones Position</div>
+                        <p class="stance-text">Pursues systemic reform including police accountability, sentencing reform, rehabilitation focus, and breaking cycles of incarceration.</p>
+                    </div>
+                    <div class="stance">
+                        <div class="stance-label conservative">Scott Jennings Position</div>
+                        <p class="stance-text">Prioritizes public safety, law enforcement support, swift justice, and maintaining strong deterrence against criminal activity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tour Schedule -->
+    <section id="tour" class="tour-section">
+        <div class="container">
+            <h2>2026 Tour Schedule</h2>
+            <div class="tour-container">
+                <div class="tour-events">
+                    <div class="tour-event">
+                        <h4>🎭 Boston, MA</h4>
+                        <p class="date">Thursday, September 10th</p>
+                        <p class="venue">Emerson Colonial Theatre</p>
+                    </div>
+                    <div class="tour-event">
+                        <h4>🎭 Detroit, MI</h4>
+                        <p class="date">Wednesday, September 16th</p>
+                        <p class="venue">Fisher Theatre</p>
+                    </div>
+                    <div class="tour-event">
+                        <h4>🎭 New York, NY</h4>
+                        <p class="date">Wednesday, September 23rd</p>
+                        <p class="venue">Grand Theatre @ Hammerstein Ballroom</p>
+                    </div>
+                    <div class="tour-event">
+                        <h4>🎭 Atlanta, GA</h4>
+                        <p class="date">Thursday, October 8th</p>
+                        <p class="venue">Pullman Yards</p>
+                    </div>
+                    <div class="tour-event">
+                        <h4>🎭 Washington, DC</h4>
+                        <p class="date">Thursday, October 15th</p>
+                        <p class="venue">Warner Theatre</p>
+                    </div>
+                    <div class="tour-event">
+                        <h4>🎭 San Francisco, CA</h4>
+                        <p class="date">October 19th - 22nd</p>
+                        <p class="venue">Golden Gate Theatre</p>
+                    </div>
+                </div>
+                <div id="map"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Coverage -->
+    <section id="media" class="media-section">
+        <div class="container">
+            <h2>Media Coverage & Articles</h2>
+
+            <!-- Boston Coverage -->
+            <div class="media-city">
+                <h3>Boston, MA Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-boston-1')">
+                        <h4>Boston Globe</h4>
+                        <p>"Healthcare Debate Takes Center Stage in Boston Town Hall"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-boston-2')">
+                        <h4>WBUR News</h4>
+                        <p>"Jones and Jennings Bring Civil Discourse to New England"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-boston-3')">
+                        <h4>Harvard Gazette</h4>
+                        <p>"Historic Debate Event Draws Diverse Audience to Emerson Theatre"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detroit Coverage -->
+            <div class="media-city">
+                <h3>Detroit, MI Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-detroit-1')">
+                        <h4>Detroit Free Press</h4>
+                        <p>"Economic Recovery: Progressive vs. Conservative Visions"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-detroit-2')">
+                        <h4>Michigan Radio</h4>
+                        <p>"Manufacturing, Jobs, and the Future of Detroit's Economy"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-detroit-3')">
+                        <h4>UAW Spotlight</h4>
+                        <p>"Labor Leaders React to Debate on Worker Protections"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New York Coverage -->
+            <div class="media-city">
+                <h3>New York, NY Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-ny-1')">
+                        <h4>New York Times</h4>
+                        <p>"Education Policy at the Center: Two Visions for America's Schools"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-ny-2')">
+                        <h4>NY1 News</h4>
+                        <p>"Student Debt Crisis Takes Center Stage in City Debate"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-ny-3')">
+                        <h4>Gothamist</h4>
+                        <p>"Thousands Gather for Civility in Political Discourse"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atlanta Coverage -->
+            <div class="media-city">
+                <h3>Atlanta, GA Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-atlanta-1')">
+                        <h4>Atlanta Journal-Constitution</h4>
+                        <p>"Criminal Justice Reform Debate Hits Close to Home"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-atlanta-2')">
+                        <h4>Axios Atlanta</h4>
+                        <p>"REFORM Alliance Tackles Sentencing Disparities"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-atlanta-3')">
+                        <h4>Atlanta Voice</h4>
+                        <p>"Community Leaders on Policing, Accountability, and Change"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DC Coverage -->
+            <div class="media-city">
+                <h3>Washington, DC Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-dc-1')">
+                        <h4>Washington Post</h4>
+                        <p>"Immigration Debate Highlights Partisan Divide on Border Policy"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-dc-2')">
+                        <h4>Politico</h4>
+                        <p>"Midterm Preview: Economic and Immigration Issues Dominate"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-dc-3')">
+                        <h4>NPR Politics</h4>
+                        <p>"Bipartisan Town Hall Provides Window into Campaign Issues"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- San Francisco Coverage -->
+            <div class="media-city">
+                <h3>San Francisco, CA Event</h3>
+                <div class="article-grid">
+                    <div class="article-card" onclick="openModal('modal-sf-1')">
+                        <h4>San Francisco Chronicle</h4>
+                        <p>"Climate Debate Heats Up as Election Season Intensifies"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-sf-2')">
+                        <h4>KQED News</h4>
+                        <p>"Green Energy Transition Takes Center Stage in West Coast Debate"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                    <div class="article-card" onclick="openModal('modal-sf-3')">
+                        <h4>TechCrunch</h4>
+                        <p>"Innovation and Environmental Policy in the Spotlight"</p>
+                        <a href="#">Read Full Article →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section id="social" class="social-section">
+        <div class="container">
+            <h2>Social Media Coverage</h2>
+            <div class="social-grid">
+                <!-- Instagram -->
+                <div class="social-card">
+                    <div class="social-header">📸 Instagram</div>
+                    <div class="social-post">
+                        <h4>@upfordebate</h4>
+                        <p>"Bringing civility back to political discourse. Van Jones and Scott Jennings taking on the issues that matter. 6 cities. One mission. Civil disagreement. #UpForDebate2026"</p>
+                        <div class="social-engagement">
+                            <div class="engagement-stat">
+                                <div class="count">24.5K</div>
+                                <div class="label">Likes</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">3.2K</div>
+                                <div class="label">Comments</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">8.1K</div>
+                                <div class="label">Shares</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- X (Twitter) -->
+                <div class="social-card">
+                    <div class="social-header">𝕏 X (Twitter)</div>
+                    <div class="social-post">
+                        <h4>@VanJones68</h4>
+                        <p>"Real debate. Real ideas. No gotchas. Heading to Boston tomorrow with @ScottJenningsKY to talk about what matters: healthcare, jobs, justice. Democracy works when we listen. #UpForDebate"</p>
+                        <div class="social-engagement">
+                            <div class="engagement-stat">
+                                <div class="count">156K</div>
+                                <div class="label">Likes</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">34K</div>
+                                <div class="label">Retweets</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">12K</div>
+                                <div class="label">Replies</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TikTok -->
+                <div class="social-card">
+                    <div class="social-header">🎵 TikTok</div>
+                    <div class="social-post">
+                        <h4>@upfordebate</h4>
+                        <p>"When conservatives and progressives actually listen to each other 👀 Watch the clip where they find common ground on criminal justice. Full event: [link]"</p>
+                        <div class="social-engagement">
+                            <div class="engagement-stat">
+                                <div class="count">892K</div>
+                                <div class="label">Views</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">145K</div>
+                                <div class="label">Likes</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">23K</div>
+                                <div class="label">Shares</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YouTube -->
+                <div class="social-card">
+                    <div class="social-header">▶️ YouTube</div>
+                    <div class="social-post">
+                        <h4>UP FOR DEBATE Official</h4>
+                        <p>"Full Boston Town Hall - Van Jones vs Scott Jennings | Healthcare Debate (2:45:32) Subscribe for full debates from all 6 cities!"</p>
+                        <div class="social-engagement">
+                            <div class="engagement-stat">
+                                <div class="count">1.2M</div>
+                                <div class="label">Views</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">45K</div>
+                                <div class="label">Likes</div>
+                            </div>
+                            <div class="engagement-stat">
+                                <div class="count">12K</div>
+                                <div class="label">Subs</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 UP FOR DEBATE. All rights reserved.</p>
+        <p>For press inquiries: <a href="mailto:jackstankey26@outlook.com" style="color: #3b82f6; text-decoration: none;">jackstankey26@outlook.com</a></p>
+    </footer>
+
+    <!-- Article Modals -->
+    <!-- Boston Modals -->
+    <div id="modal-boston-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-boston-1')">&times;</span>
+            <h2>Boston Globe: Healthcare Debate Takes Center Stage</h2>
+            <div class="modal-section">
+                <h3>The Event</h3>
+                <p>In a packed Emerson Colonial Theatre, progressive voice Van Jones and conservative strategist Scott Jennings squared off on one of America's most pressing issues: healthcare access and affordability. The town hall drew an estimated 2,500 attendees who engaged in substantive discussion about the future of American healthcare policy.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Key Arguments</h3>
+                <p><strong>Van Jones</strong> argued for universal healthcare as a moral imperative, pointing to families bankrupted by medical debt. He called for government investment in public health infrastructure and pharmaceutical price controls.</p>
+                <p><strong>Scott Jennings</strong> countered that market competition drives innovation and efficiency, warning that government-run systems lead to long wait times and reduced choices. He advocated for reducing regulatory barriers and allowing individuals to select plans.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Audience Response</h3>
+                <p>The audience appeared energized by the respectful but substantive disagreement. Post-debate polling showed 48% felt Jones won the healthcare debate, while 42% favored Jennings' approach, with 10% undecided—reflecting the genuine divide on this issue.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Next Stop: Detroit</h3>
+                <p>The tour heads to Detroit next week where economic policy and manufacturing jobs will take center stage. Expect heated discussion on trade agreements, union rights, and the transition to green energy manufacturing.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-boston-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-boston-2')">&times;</span>
+            <h2>WBUR News: Civil Discourse in New England</h2>
+            <div class="modal-section">
+                <h3>A Model for Political Dialogue</h3>
+                <p>The UP FOR DEBATE tour's Boston stop demonstrated that Americans across the political spectrum can engage in substantive, respectful disagreement. Rather than the partisan theater that dominates cable news, this event showcased two accomplished political figures taking each other's arguments seriously.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Healthcare Takes Priority</h3>
+                <p>Healthcare policy dominated the evening's discussion, with particular focus on pharmaceutical pricing, insurance coverage, and the role of government. Jones emphasized the human cost of the current system, while Jennings defended market-based approaches.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Audience Engagement</h3>
+                <p>The town hall format allowed Boston residents to ask questions directly. Issues ranged from specific insurance coverage scenarios to broader policy questions about the direction of American healthcare.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Detroit Preview</h3>
+                <p>Manufacturing and economic opportunity will be the focus in Detroit. Watch for discussion of how to preserve American manufacturing while transitioning to clean energy jobs.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-boston-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-boston-3')">&times;</span>
+            <h2>Harvard Gazette: Historic Debate Event</h2>
+            <div class="modal-section">
+                <h3>Academic Perspectives</h3>
+                <p>Harvard experts in public health policy attended the event and noted the intellectual rigor of the debate. "Both speakers grounded their arguments in evidence rather than rhetorical attacks," noted one attending professor of public policy.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Educational Value</h3>
+                <p>The event served as a live case study in political disagreement for several Harvard Kennedy School classes. Students observed how complex policy questions can be discussed substantively without devolving into personal attacks.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Healthcare System Debate</h3>
+                <p>Jones presented data on healthcare outcomes in other developed nations, while Jennings countered with research on efficiency and innovation rates under competitive systems. The debate highlighted legitimate disagreements on empirical questions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Looking Ahead</h3>
+                <p>Detroit's focus on economic policy and labor issues will test whether the pair can find common ground on worker protections while disagreeing on methods.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detroit Modals -->
+    <div id="modal-detroit-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-detroit-1')">&times;</span>
+            <h2>Detroit Free Press: Economic Recovery Visions</h2>
+            <div class="modal-section">
+                <h3>Manufacturing Future Debate</h3>
+                <p>Van Jones and Scott Jennings brought the tour to the heart of American manufacturing, engaging Detroit residents on competing visions for economic recovery. The Fisher Theatre event drew over 2,000 attendees passionate about the city's economic future.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Green Jobs vs. Free Markets</h3>
+                <p><strong>Jones</strong> argued that green manufacturing offers the best path forward for Detroit, with federal investment in electric vehicle production and renewable energy infrastructure creating good-paying union jobs.</p>
+                <p><strong>Jennings</strong> countered that government-sponsored initiatives distort markets and that Detroit's revival depends on removing regulatory barriers that make American manufacturing uncompetitive globally.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Union Leader Reaction</h3>
+                <p>Major union representatives attended and appreciated the respectful engagement with labor concerns. However, they noted the fundamental disagreement on the role of government support for manufacturing.</p>
+            </div>
+            <div class="modal-section">
+                <h3>New York Preview</h3>
+                <p>Next stop: New York will focus on education policy, student debt, and institutional reform. Expect debate on public education funding, charter schools, and addressing student loan burden.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-detroit-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-detroit-2')">&times;</span>
+            <h2>Michigan Radio: Jobs and the Economy</h2>
+            <div class="modal-section">
+                <h3>Detroit's Stakes</h3>
+                <p>No city understands economic debate better than Detroit. The Motor City has experienced deindustrialization, recovery, and now faces decisions about its technological future. The UP FOR DEBATE event gave Detroiters a chance to hear competing visions directly.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Trade Policy Discussion</h3>
+                <p>Trade agreements and tariff policy featured prominently. Jones argued for fair trade that protects American workers, while Jennings defended free trade's long-term benefits despite short-term disruptions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Technology and Jobs</h3>
+                <p>Both speakers acknowledged that automation is reshaping manufacturing. Jones emphasized the need for retraining programs, while Jennings focused on education innovation and market-driven solutions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Audience Participation</h3>
+                <p>Laid-off workers, business owners, and young people seeking opportunity asked pointed questions about their futures. The candidates took each question seriously.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-detroit-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-detroit-3')">&times;</span>
+            <h2>UAW Spotlight: Labor Leaders React</h2>
+            <div class="modal-section">
+                <h3>Union Perspective</h3>
+                <p>United Auto Workers leadership attended the Detroit event and offered mixed reactions. While appreciating the serious treatment of labor issues, union leaders noted the fundamental disagreement over government's role in protecting workers.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jones on Worker Power</h3>
+                <p>Van Jones emphasized union representation, collective bargaining rights, and government support for manufacturing as essential to worker power. He called for living wages and benefits standards.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jennings on Competitiveness</h3>
+                <p>Scott Jennings argued that while worker wellbeing matters, mandates that increase labor costs make American manufacturing uncompetitive. He suggested skill development and market-driven solutions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Common Ground?</h3>
+                <p>Both acknowledged that manufacturing is critical to American prosperity. However, their paths to achieve it diverged sharply, reflecting genuine disagreement among economists on the best approach.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- New York Modals -->
+    <div id="modal-ny-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-ny-1')">&times;</span>
+            <h2>New York Times: Education Policy Vision</h2>
+            <div class="modal-section">
+                <h3>Education Takes Center Stage</h3>
+                <p>In the nation's largest city, education policy was the dominant theme. The Grand Theatre at Hammerstein Ballroom hosted 3,000+ attendees passionate about America's schools and students.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Public vs. Market Schools</h3>
+                <p><strong>Van Jones</strong> argued for robust public school funding and equity initiatives, noting that the zip code a child is born in shouldn't determine their education quality. He called for universal access to quality education.</p>
+                <p><strong>Scott Jennings</strong> championed school choice, charter schools, and parental control, arguing that competition drives quality and that one-size-fits-all public schools don't serve all students.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Student Debt Crisis</h3>
+                <p>Significant discussion focused on student loan debt. Jones advocated debt forgiveness and free public college, while Jennings argued for market-based solutions to reduce college costs and argued against broad debt cancellation.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Atlanta Preview</h3>
+                <p>The tour heads to Atlanta where criminal justice reform and sentencing policy will dominate. This touches Van Jones's core mission with the REFORM Alliance.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-ny-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-ny-2')">&times;</span>
+            <h2>NY1 News: Student Debt Crisis</h2>
+            <div class="modal-section">
+                <h3>A Defining Issue for Young Americans</h3>
+                <p>Student debt has become a defining economic issue for millions of Americans. The New York event drew particular attention from younger attendees burdened by six-figure loan balances.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jones's Approach</h3>
+                <p>Jones advocated for federal loan forgiveness, arguing that student debt prevents people from buying homes, starting businesses, and building lives. He cited the program as economic stimulus.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jennings's Counter</h3>
+                <p>Jennings argued that broad debt forgiveness is fiscally irresponsible and unfairly penalizes those who paid their debt or skipped college. He favored income-based repayment and reducing college costs at the source.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Economic Impact Debate</h3>
+                <p>The speakers disagreed on the economic stimulus effects of debt relief, the incentives it creates for future borrowing, and the fairness of various policy approaches.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-ny-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-ny-3')">&times;</span>
+            <h2>Gothamist: Thousands Gather for Civil Discourse</h2>
+            <div class="modal-section">
+                <h3>A Breath of Fresh Air</h3>
+                <p>In an era of partisan polarization, the UP FOR DEBATE event offered New Yorkers something increasingly rare: a substantive, respectful debate between intelligent people who genuinely disagreed.</p>
+            </div>
+            <div class="modal-section">
+                <h3>NYC's Diverse Politics</h3>
+                <p>New York City's diverse population—both politically and demographically—created a microcosm of American political disagreement. The audience included progressives, conservatives, and those undecided on education policy.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Teacher and Parent Perspectives</h3>
+                <p>NYC teachers, school administrators, and parents asked thoughtful questions about implementation details of proposed policies. Jones and Jennings engaged seriously with practical concerns.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Next Stop: Atlanta</h3>
+                <p>Criminal justice reform will be the focus in Atlanta. This is personal territory for Van Jones and his REFORM Alliance work.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Atlanta Modals -->
+    <div id="modal-atlanta-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-atlanta-1')">&times;</span>
+            <h2>Atlanta Journal-Constitution: Criminal Justice Reform</h2>
+            <div class="modal-section">
+                <h3>Reform Alliance on Home Turf</h3>
+                <p>Van Jones brought his REFORM Alliance mission to Atlanta, a city deeply affected by mass incarceration. The event at Pullman Yards drew community leaders, formerly incarcerated individuals, and criminal justice advocates.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Systemic Reform vs. Public Safety</h3>
+                <p><strong>Jones</strong> pushed for systemic change: addressing sentencing disparities, police accountability, rehabilitation focus, and breaking cycles of incarceration. He cited data on racial disparities in sentencing.</p>
+                <p><strong>Jennings</strong> emphasized public safety, law enforcement support, and swift justice. He argued that strong deterrence and police support complement reform, not contradict it.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Community Voices</h3>
+                <p>Formerly incarcerated individuals, crime victims, and community leaders asked questions revealing the complexity of criminal justice. No easy answers emerged, but the honest engagement was appreciated.</p>
+            </div>
+            <div class="modal-section">
+                <h3>DC Focus Preview</h3>
+                <p>Washington, DC will bring immigration and border security to the forefront. Expect discussion of asylum policy, legal immigration, and America's international responsibilities.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-atlanta-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-atlanta-2')">&times;</span>
+            <h2>Axios Atlanta: REFORM Alliance Mission</h2>
+            <div class="modal-section">
+                <h3>Van Jones's Core Mission</h3>
+                <p>The Atlanta event represented the heart of Van Jones's work through the REFORM Alliance, co-founded with Jay-Z, Meek Mill, and six billionaires to transform the criminal justice system.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Sentencing Disparities</h3>
+                <p>Jones presented data on severe racial disparities in sentencing for similar crimes. He argued these disparities reflect systemic racism and called for sentencing reform and prosecutorial accountability.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jennings on Accountability</h3>
+                <p>Jennings acknowledged disparity concerns but argued the answer involves stronger police training, effective prosecution, and swift justice—not reduced sentences that might endanger communities.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Rehabilitation Focus</h3>
+                <p>Both acknowledged that rehabilitation matters, but they disagreed on its relationship to punishment and deterrence. Jones emphasized restoration, Jennings emphasized accountability.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-atlanta-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-atlanta-3')">&times;</span>
+            <h2>Atlanta Voice: Community Leaders Speak</h2>
+            <div class="modal-section">
+                <h3>Neighborhood Voices Matter</h3>
+                <p>Community leaders from Atlanta neighborhoods affected by crime and incarceration shared their perspectives. Crime victims' families, business owners, and activists engaged with both speakers.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Lived Experience</h3>
+                <p>A mother who lost her son to violence asked about public safety approaches. A formerly incarcerated man asked about rehabilitation and reentry. These human questions grounded abstract policy debate.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Police and Community Relations</h3>
+                <p>The event included respectful discussion of police accountability without dismissing the need for public safety. Both speakers acknowledged the legitimate concerns of both communities and law enforcement.</p>
+            </div>
+            <div class="modal-section">
+                <h3>DC: Immigration Up Next</h3>
+                <p>Immigration and border security will dominate Washington, DC. This is another area where progressive and conservative approaches diverge significantly.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- DC Modals -->
+    <div id="modal-dc-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-dc-1')">&times;</span>
+            <h2>Washington Post: Immigration Debate</h2>
+            <div class="modal-section">
+                <h3>Border Security and Compassion</h3>
+                <p>The Warner Theatre event in Washington, DC brought immigration policy—one of America's most contentious issues—to center stage. Thousands of DC residents, immigrant advocates, and border security professionals attended.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Progressive Immigration Stance</h3>
+                <p><strong>Van Jones</strong> argued America's founding identity is multicultural. He called for comprehensive immigration reform including pathways to citizenship, humanitarian asylum protections, and family unity provisions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Conservative Border Position</h3>
+                <p><strong>Scott Jennings</strong> emphasized border security and rule of law. He supported managed immigration that matches labor market needs but opposed open borders. He argued enforcement is essential.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Economic and Security Concerns</h3>
+                <p>Disagreement emerged on labor market impacts, fiscal costs, security risks, and humanitarian obligations. Both speakers cited research supporting their positions.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-dc-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-dc-2')">&times;</span>
+            <h2>Politico: Midterm Preview</h2>
+            <div class="modal-section">
+                <h3>Campaign Issues Emerge</h3>
+                <p>The UP FOR DEBATE tour serves as a preview of issues dominating midterm elections. Immigration and the economy are top voter concerns according to polls.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Competing Narratives</h3>
+                <p>Jones framed immigration as economic opportunity and humanitarian obligation. Jennings framed it as security and fiscal responsibility. These competing narratives will shape 2026 campaigns.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Moderate Swing Voters</h3>
+                <p>The event appealed to swing voters trying to understand both perspectives. DC's suburban counties are key 2026 battlegrounds where immigration could decide elections.</p>
+            </div>
+            <div class="modal-section">
+                <h3>San Francisco: Climate Policy</h3>
+                <p>The final stop in San Francisco will address climate change—the issue defining younger voters' political engagement.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-dc-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-dc-3')">&times;</span>
+            <h2>NPR Politics: Bipartisan Town Hall Preview</h2>
+            <div class="modal-section">
+                <h3>Model for Democratic Engagement</h3>
+                <p>As America's ideological divisions deepen, the UP FOR DEBATE tour offers a model for how citizens across the spectrum can engage. NPR's analysis suggests such events could help rebuild political trust.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Both Sides' Legitimate Concerns</h3>
+                <p>The DC immigration debate revealed legitimate concerns on both sides: border security is genuinely important, and America's humanitarian obligations are also real. The speakers differed on balance and approach.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Voter Learning Opportunity</h3>
+                <p>Pre- and post-debate surveys showed voters learned about opposing viewpoints and appreciated the respectful engagement. Some minds weren't changed, but understanding deepened.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Final Stop: San Francisco</h3>
+                <p>Climate change, green energy, and environmental policy will close the tour. This issue increasingly defines generational divides in American politics.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- San Francisco Modals -->
+    <div id="modal-sf-1" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-sf-1')">&times;</span>
+            <h2>San Francisco Chronicle: Climate Debate</h2>
+            <div class="modal-section">
+                <h3>Climate at the Forefront</h3>
+                <p>The final stop of the UP FOR DEBATE tour brought climate change policy to the Golden Gate Theatre. The event featured passionate discussion about America's environmental future and economic transition.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Urgency vs. Innovation</h3>
+                <p><strong>Van Jones</strong> emphasized climate urgency, calling for aggressive renewable energy transition, carbon regulations, and public investment in green technology. He cited climate scientists' warnings.</p>
+                <p><strong>Scott Jennings</strong> didn't deny climate change but emphasized innovation over mandates. He argued market forces and technological advancement offer better solutions than government requirements.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Energy Independence</h3>
+                <p>Disagreement centered on whether aggressive climate action strengthens or weakens American energy independence. Jones argued renewables bring independence; Jennings worried about transition costs.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Jobs and Economy</h3>
+                <p>Green jobs featured prominently. Jones cited growing solar and wind industries; Jennings noted transition challenges for fossil fuel workers.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-sf-2" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-sf-2')">&times;</span>
+            <h2>KQED News: Green Energy Transition</h2>
+            <div class="modal-section">
+                <h3>California's Green Leadership</h3>
+                <p>San Francisco's focus on environmental issues brought California's green leadership into sharp relief. The state has aggressive climate goals that both speakers addressed.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Private vs. Public Sector Solutions</h3>
+                <p>Jones argued California's regulations drive innovation; Jennings pointed to Tesla and private companies leading without mandates. The debate reflected real-world disagreement about climate solutions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Global Competitiveness</h3>
+                <p>Both acknowledged climate competition with China and Europe. However, they disagreed whether American leadership requires aggressive government action or market-driven innovation.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Tour Conclusion</h3>
+                <p>The San Francisco event concluded the six-city tour, leaving both speakers and audiences with important questions about America's environmental future.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-sf-3" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('modal-sf-3')">&times;</span>
+            <h2>TechCrunch: Innovation and Policy</h2>
+            <div class="modal-section">
+                <h3>Silicon Valley's Role</h3>
+                <p>The San Francisco event attracted Silicon Valley entrepreneurs and technologists interested in climate solutions. TechCrunch covered the debate as a preview of innovation trends in green technology.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Market vs. Mandate</h3>
+                <p>Tech entrepreneurs are divided: some see government incentives as essential (tax credits, procurement mandates), others prefer pure market competition. Both speakers reflected these tensions.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Battery Technology and EVs</h3>
+                <p>The speakers debated whether American companies should lead electric vehicle battery production. Jones called for federal investment; Jennings cited private progress.</p>
+            </div>
+            <div class="modal-section">
+                <h3>Tour Reflection</h3>
+                <p>The tour demonstrated Americans across the political spectrum care about similar issues (jobs, security, environment) but propose different solutions. Civil disagreement is possible.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script>
+        // Navigation active state
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Initialize Leaflet Map
+        const map = L.map('map').setView([39.8, -98.5], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19,
+            className: 'leaflet-tile'
+        }).addTo(map);
+
+        // Set max bounds to US only
+        const usaBounds = [[24.5, -125], [49.5, -66]];
+        map.setMaxBounds(usaBounds);
+
+        // Tour cities with correct coordinates
+        const cities = [
+            { name: 'Boston, MA', lat: 42.3601, lng: -71.0589, date: 'Sept 10' },
+            { name: 'Detroit, MI', lat: 42.3314, lng: -83.0458, date: 'Sept 16' },
+            { name: 'New York, NY', lat: 40.7128, lng: -74.0060, date: 'Sept 23' },
+            { name: 'Atlanta, GA', lat: 33.7490, lng: -84.3880, date: 'Oct 8' },
+            { name: 'Washington, DC', lat: 38.9072, lng: -77.0369, date: 'Oct 15' },
+            { name: 'San Francisco, CA', lat: 37.7749, lng: -122.4194, date: 'Oct 19-22' }
+        ];
+
+        cities.forEach((city, index) => {
+            const color = index % 2 === 0 ? '#3b82f6' : '#ef4444';
+            L.circleMarker([city.lat, city.lng], {
+                radius: 10,
+                fillColor: color,
+                color: '#fff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.9
+            }).bindPopup(`<strong>${city.name}</strong><br>${city.date}`).addTo(map);
+        });
+    </script>
+</body>
+</html>

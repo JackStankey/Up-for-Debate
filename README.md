@@ -1,85 +1,110 @@
-<section id="overview" class="section section-dark">
-  <div class="container split-section">
-    <div>
-      <p class="section-kicker">What the tour is</p>
-      <h2>Substantive disagreement, live on stage.</h2>
-      <p>Up for Debate is a multi-city live event series designed to model serious dialogue across political lines in the lead-up to the U.S. midterm elections. Each stop features a live audience, a moderator, structured issue blocks, and audience participation.</p>
-      <p>Rather than partisan theater, the format is built around informed disagreement. Guests make their case, challenge each other directly, answer audience questions, and let the crowd decide who made the stronger argument on each topic.</p>
-    </div>
-    <div class="info-panel">
-      <h3>Event format</h3>
-      <ul class="timeline-list">
-        <li><span>5:00 PM</span> Doors open</li>
-        <li><span>6:00 PM</span> Discussion begins</li>
-        <li><span>7:00 PM</span> Audience Q&amp;A</li>
-        <li><span>7:30 PM</span> Event concludes</li>
-      </ul>
-      <div class="badge-row">
-        <span class="pill">Live audience</span>
-        <span class="pill">Moderated format</span>
-        <span class="pill">Issue-by-issue voting</span>
-      </div>
-    </div>
-  </div>
-</section>
+# Up for Debate - Town Hall Tour 2026
 
-<section id="voices" class="section">
-  <div class="container">
-    <p class="section-kicker">Featured voices</p>
-    <h2>Two national commentators. Opposite ideological lanes.</h2>
-    <div class="speaker-grid">
-      <article class="speaker-card left-card">
-        <img src="assets/van-jones.png" alt="Van Jones" class="speaker-image" />
-        <div class="speaker-copy">
-          <span class="speaker-tag">Left-of-center perspective</span>
-          <h3>Van Jones</h3>
-          <p>Van Jones is a CNN host, political commentator, bestselling author, and longtime advocate on criminal justice reform, human rights, and systemic change. He previously served as a senior advisor to President Barack Obama.</p>
-        </div>
-      </article>
-      <article class="speaker-card right-card">
-        <img src="assets/scott-jennings.png" alt="Scott Jennings" class="speaker-image" />
-        <div class="speaker-copy">
-          <span class="speaker-tag">Conservative perspective</span>
-          <h3>Scott Jennings</h3>
-          <p>Scott Jennings is a CNN senior political commentator, Republican strategist, and co-founder of RunSwitch. A former special assistant to President George W. Bush, he is known for defending conservative policy positions in high-profile TV debates.</p>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
+A modern, responsive website for the Up for Debate town hall tour featuring progressive and conservative political commentary.
 
-<section id="headlines" class="section section-dark issue-section">
-  <div class="container">
-    <p class="section-kicker">Major headlines from the deck</p>
-    <h2>The issues expected to drive the room.</h2>
-    <p class="section-intro">These sections track the core topics outlined in the presentation deck. Each includes a short quote card for Scott Jennings and Van Jones reflecting the contrasting arguments likely to shape the conversation.</p>
-    <div id="issues-grid" class="issues-grid"></div>
-  </div>
-</section>
+## Overview
 
-<section id="tour" class="section">
-  <div class="container">
-    <div class="tour-header">
-      <div>
-        <p class="section-kicker">Tour route</p>
-        <h2>Updated dates and locations</h2>
-      </div>
-      <div class="tour-note">Dates and markets updated from the latest tour schedule document.</div>
-    </div>
-    <div class="map-wrap">
-      <div id="tour-map" aria-label="Map of Up for Debate tour stops"></div>
-    </div>
-    <div id="tour-stops" class="tour-stops"></div>
-  </div>
-</section>
+**Up for Debate** is a multi-city live event series designed to model substantive dialogue across political lines. The tour features two prominent national commentators:
 
-<section class="section cta-section">
-  <div class="container cta-box">
-    <div>
-      <p class="section-kicker">Why it stands out</p>
-      <h2>A political event built for live reaction.</h2>
-      <p>The tour is positioned as a national town hall experience: recognizable talent, culturally relevant topics, audience participation, and a visual split-screen identity that mirrors the debate itself.</p>
-    </div>
-    <a href="#tour" class="btn btn-primary">Track the Tour</a>
-  </div>
-</section>
+- **Van Jones** - Progressive Voice (CNN host, political commentator, criminal justice reform advocate)
+- **Scott Jennings** - Conservative Voice (CNN senior political commentator, Republican strategist)
+
+Rather than partisan theater, the format is built around informed disagreement with live audiences, moderated discussions, structured issue blocks, and audience participation.
+
+## Tour Dates
+
+The 2026 tour includes six confirmed cities:
+
+1. **Boston, MA** - Thursday, September 10th - Emerson Colonial Theatre
+2. **Detroit, MI** - Wednesday, September 16th - Fisher Theatre
+3. **New York, NY** - Wednesday, September 23rd - Grand Theatre @ Hammerstein Ballroom
+4. **Atlanta, GA** - Thursday, October 8th - Pullman Yards
+5. **Washington, DC** - Thursday, October 15th - Warner Theatre
+6. **San Francisco, CA** - Monday, October 19th - Thursday, October 22nd - Golden Gate Theatre
+
+## Key Topics
+
+The tour covers six major debate topics with dual perspectives:
+
+- **Healthcare & Public Health** - Access, innovation, and the role of government
+- **Women's Health & Rights** - Autonomy, reproductive health, and workplace equality
+- **Immigration & Border Security** - Policy, security, and humanitarian concerns
+- **Economic Opportunity & Inequality** - Growth strategies and inequality solutions
+- **Democracy, Media & Civic Trust** - Election integrity, media landscape, and civic participation
+- **Foreign Policy & Global Role** - America's international position and responsibilities
+
+## Website Features
+
+- **Responsive Design** - Mobile-first approach optimized for all devices
+- **Modern UI** - Dark theme with political color scheme (blue and red accents)
+- **Smooth Navigation** - Sticky navigation bar with active section tracking
+- **Interactive Elements** - Hover effects, smooth scroll animations, and fade-in transitions
+- **Accessibility** - Semantic HTML, proper contrast ratios, keyboard navigation support
+- **Performance** - Lightweight single-file HTML with inline CSS and JavaScript
+- **External Images** - High-quality images from Unsplash for speakers and topics
+
+## Technical Details
+
+**Technology Stack:**
+- HTML5 semantic markup
+- CSS3 with CSS custom properties (variables)
+- Vanilla JavaScript (no frameworks or dependencies)
+- Responsive grid layouts
+- CSS animations and transitions
+
+**File Structure:**
+- Single `index.html` file with:
+  - Inline `<style>` section containing all CSS
+  - Inline `<script>` section containing all JavaScript
+  - No external dependencies required
+
+**Deployment:**
+- GitHub Pages hosting
+- Live at: `https://jackstankey.github.io/up-for-debate`
+- Automatic deployment on push to main branch
+
+## Features
+
+### Navigation
+- Sticky header with smooth scroll navigation
+- Active link highlighting based on scroll position
+- Mobile-responsive menu
+
+### Sections
+
+1. **Hero Section** - Eye-catching landing with call-to-action
+2. **The Matchup** - Profiles of Van Jones and Scott Jennings with bios
+3. **Event Overview** - Summary of event format and key topics
+4. **Tour Schedule** - Calendar of all six tour dates with venues
+5. **Key Debate Topics** - Six debate topics with dual perspectives, images, and quotes
+6. **Tour Coverage** - Article cards for reporting and analysis
+7. **Footer** - Quick links, contact information, and copyright
+
+### Design Elements
+
+- **Color Scheme:**
+  - Primary Blue: `#1e3a8a`
+  - Primary Red: `#991b1b`
+  - Accent Blue: `#3b82f6`
+  - Accent Red: `#ef4444`
+  - Dark Background: `#0f1419`
+  - Light Text: `#f5f5f5`
+
+- **Typography:** Segoe UI, Tahoma, Geneva, Verdana, sans-serif
+- **Animations:** Fade-in effects on scroll, hover transformations, smooth transitions
+- **Grid Layouts:** Responsive grids that collapse to single column on mobile
+
+## Contact
+
+For event inquiries and media coverage:
+
+**Jack Stankey**  
+jackstankey26@outlook.com
+
+## License
+
+&copy; 2026 Up for Debate. All rights reserved.
+
+---
+
+*Last Updated: March 2026*

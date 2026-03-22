@@ -105,9 +105,24 @@
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            background: linear-gradient(135deg, #000814 0%, #001d3d 50%, #0a1c3d 100%);
             color: #e0e0e0;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
         /* Navigation */
         .navbar {
@@ -169,46 +184,87 @@
         /* Hero Section */
         .hero {
             margin-top: 70px;
-            padding: 6rem 2rem;
+            padding: 8rem 2rem;
             text-align: center;
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(239, 68, 68, 0.1) 100%);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(180deg, rgba(0, 8, 20, 0.8) 0%, rgba(59, 130, 246, 0.15) 50%, rgba(239, 68, 68, 0.1) 100%);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background:
+                radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(239, 68, 68, 0.15) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            z-index: 0;
+        }
+        .hero > * {
+            position: relative;
+            z-index: 1;
         }
         .hero h1 {
-            font-size: 3.5rem;
+            font-size: 5.5rem;
+            font-weight: 900;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, #3b82f6 0%, #ef4444 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #ef4444 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: glow 3s ease-in-out infinite, fadeInDown 1s ease-out;
+            letter-spacing: -2px;
+            line-height: 1.1;
+            text-shadow: 0 20px 40px rgba(59, 130, 246, 0.3);
         }
         .hero p {
-            font-size: 1.3rem;
-            color: #b0b0b0;
-            margin-bottom: 2rem;
-            max-width: 800px;
+            font-size: 1.5rem;
+            color: #c0c0c0;
+            margin-bottom: 3rem;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
             animation: fadeInUp 1s ease-out 0.3s both;
+            font-weight: 500;
+            letter-spacing: 0.5px;
         }
         .cta-button {
             display: inline-block;
-            padding: 12px 32px;
+            padding: 16px 48px;
             background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 12px;
             font-weight: bold;
             transition: transform 0.3s, box-shadow 0.3s;
-            border: none;
+            border: 2px solid #3b82f6;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
             animation: fadeInUp 1s ease-out 0.6s both;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+        }
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        .cta-button:hover::before {
+            left: 100%;
         }
         .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.4);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.6), 0 0 30px rgba(59, 130, 246, 0.3);
             animation: pulse 1.5s infinite;
         }
         /* Container */
@@ -221,6 +277,19 @@
         section {
             padding: 4rem 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        section::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 60px;
+            background: linear-gradient(180deg, #3b82f6, transparent);
+        }
+        section:nth-child(even)::before {
+            background: linear-gradient(180deg, #ef4444, transparent);
         }
         h2 {
             font-size: 2.5rem;
@@ -252,14 +321,30 @@
             align-items: center;
         }
         .matchup-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            padding: 2rem;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            padding: 2.5rem;
             text-align: center;
-            transition: transform 0.3s, border-color 0.3s;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
             animation: fadeInUp 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+        .matchup-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+            animation: float 15s ease-in-out infinite;
+        }
+        .matchup-card > * {
+            position: relative;
+            z-index: 1;
         }
         .matchup-card:nth-child(1) {
             animation-delay: 0.1s;
@@ -267,19 +352,37 @@
         .matchup-card:nth-child(2) {
             animation-delay: 0.3s;
         }
-        .matchup-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            border-color: rgba(255, 255, 255, 0.2);
+        .matchup-card:nth-child(1):hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #3b82f6;
+            box-shadow: 0 30px 60px rgba(59, 130, 246, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .matchup-card:nth-child(2):hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #ef4444;
+            box-shadow: 0 30px 60px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
         }
         .profile-frame {
             width: 280px;
             height: 374px;
             margin: 0 auto 2rem;
             border: 8px solid;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            transition: transform 0.5s ease;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            transition: transform 0.5s ease, filter 0.5s ease;
+            position: relative;
+        }
+        .profile-frame::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(0, 0, 0, 0.2) 100%);
+            pointer-events: none;
+            z-index: 2;
         }
         .matchup-card:nth-child(1) .profile-frame {
             border-color: #3b82f6;
@@ -405,13 +508,30 @@
             gap: 2rem;
         }
         .issue-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
             border: 2px solid;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 2rem;
             transition: transform 0.3s, box-shadow 0.3s;
             animation: fadeInUp 0.8s ease-out both;
+            position: relative;
+            overflow: hidden;
+        }
+        .issue-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+            z-index: 0;
+        }
+        .issue-card > * {
+            position: relative;
+            z-index: 1;
         }
         .issue-card:nth-child(1) { animation-delay: 0.1s; }
         .issue-card:nth-child(2) { animation-delay: 0.2s; }
@@ -425,9 +545,15 @@
         .issue-card:nth-child(even) {
             border-color: #ef4444;
         }
-        .issue-card:hover {
-            transform: translateY(-5px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        .issue-card:nth-child(odd):hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+            border-color: #3b82f6;
+        }
+        .issue-card:nth-child(even):hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(239, 68, 68, 0.4);
+            border-color: #ef4444;
         }
         .issue-card h3 {
             font-size: 1.3rem;

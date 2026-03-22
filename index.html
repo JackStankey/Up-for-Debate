@@ -653,13 +653,8 @@
             border-radius: 12px;
             border: 2px solid rgba(59, 130, 246, 0.5);
             overflow: hidden;
-            background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 30, 50, 0.3) 100%);
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(10, 28, 61, 0.4) 50%, rgba(30, 30, 50, 0.3) 100%);
             position: relative;
-        }
-        .map-wrapper {
-            position: relative;
-            height: 100%;
-            width: 100%;
         }
         .map-background {
             position: absolute;
@@ -667,10 +662,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600"><style>.state {fill:%23334155;stroke:%231e293b;stroke-width:0.5;opacity:0.6}</style><path class="state" d="M150,200 L200,180 L220,230 L170,250 Z"/><path class="state" d="M300,150 L350,140 L360,200 L310,210 Z"/><path class="state" d="M400,100 L450,90 L460,150 L410,160 Z"/><path class="state" d="M500,120 L550,110 L560,170 L510,180 Z"/><path class="state" d="M600,140 L650,130 L660,190 L610,200 Z"/><path class="state" d="M700,160 L750,150 L760,210 L710,220 Z"/><path class="state" d="M800,180 L850,170 L860,230 L810,240 Z"/><path class="state" d="M200,300 L250,290 L260,350 L210,360 Z"/><path class="state" d="M300,320 L350,310 L360,370 L310,380 Z"/><path class="state" d="M400,300 L450,290 L460,350 L410,360 Z"/><path class="state" d="M500,310 L550,300 L560,360 L510,370 Z"/><path class="state" d="M600,320 L650,310 L660,370 L610,380 Z"/><path class="state" d="M700,300 L750,290 L760,350 L710,360 Z"/><path class="state" d="M800,320 L850,310 L860,370 L810,380 Z"/><path class="state" d="M250,450 L300,440 L310,500 L260,510 Z"/><path class="state" d="M350,480 L400,470 L410,530 L360,540 Z"/><path class="state" d="M450,460 L500,450 L510,510 L460,520 Z"/><path class="state" d="M550,470 L600,460 L610,520 L560,530 Z"/><path class="state" d="M650,480 L700,470 L710,530 L660,540 Z"/></svg>');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.3;
+            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(239, 68, 68, 0.15) 0%, transparent 40%);
+            opacity: 0.5;
         }
         .map-container {
             position: relative;

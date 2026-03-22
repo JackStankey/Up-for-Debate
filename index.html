@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UP FOR DEBATE - 2026 Town Hall Tour</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
     <style>
         @keyframes fadeInDown {
             from {
@@ -655,6 +654,9 @@
             overflow: hidden;
             background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(10, 28, 61, 0.4) 50%, rgba(30, 30, 50, 0.3) 100%);
             position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .map-background {
             position: absolute;
@@ -662,15 +664,58 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(239, 68, 68, 0.15) 0%, transparent 40%);
-            opacity: 0.5;
+            background:
+                radial-gradient(ellipse 400px 300px at 15% 25%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse 350px 280px at 85% 75%, rgba(239, 68, 68, 0.2) 0%, transparent 50%);
+            z-index: 0;
         }
         .map-container {
-            position: relative;
-            z-index: 1;
-            height: 100%;
+            position: absolute;
             width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+        .map-marker {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 20;
+        }
+        .map-marker svg {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+            transition: filter 0.3s ease;
+        }
+        .map-marker:hover svg {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6)) brightness(1.2);
+        }
+        .map-tooltip {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 30;
+        }
+        .map-marker:hover .map-tooltip {
+            opacity: 1;
+        }
+        .map-tooltip-city {
+            display: block;
+            margin-bottom: 4px;
+        }
+        .map-tooltip-date {
+            display: block;
+            font-size: 12px;
+            opacity: 0.8;
         }
         /* Media Coverage */
         .media-section {
@@ -1891,7 +1936,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
     <script>
         // Navigation active state
         const navLinks = document.querySelectorAll('.nav-link');
@@ -1932,85 +1976,67 @@
             }
         });
 
-        // Tour cities with correct normalized coordinates (0-100 scale for SVG)
+        // Tour cities with percentage coordinates for positioning on map
         const cities = [
-            { name: 'Boston, MA', x: 85, y: 25, date: 'Sept 10' },
-            { name: 'Detroit, MI', x: 75, y: 28, date: 'Sept 16' },
-            { name: 'New York, NY', x: 88, y: 22, date: 'Sept 23' },
-            { name: 'Atlanta, GA', x: 80, y: 48, date: 'Oct 8' },
-            { name: 'Washington, DC', x: 85, y: 40, date: 'Oct 15' },
-            { name: 'San Francisco, CA', x: 15, y: 35, date: 'Oct 19-22' }
+            { name: 'Boston, MA', x: 82, y: 20, date: 'Sept 10', color: '#3b82f6' },
+            { name: 'Detroit, MI', x: 72, y: 25, date: 'Sept 16', color: '#ef4444' },
+            { name: 'New York, NY', x: 85, y: 18, date: 'Sept 23', color: '#3b82f6' },
+            { name: 'Atlanta, GA', x: 78, y: 50, date: 'Oct 8', color: '#ef4444' },
+            { name: 'Washington, DC', x: 83, y: 38, date: 'Oct 15', color: '#3b82f6' },
+            { name: 'San Francisco, CA', x: 18, y: 32, date: 'Oct 19-22', color: '#ef4444' }
         ];
 
-        // Create SVG markers on the map
+        // Initialize map with markers
         const mapContainer = document.getElementById('mapContainer');
-        cities.forEach((city, index) => {
-            const color = index % 2 === 0 ? '#3b82f6' : '#ef4444';
 
-            // Create marker element
+        cities.forEach((city) => {
+            // Create marker wrapper
             const marker = document.createElement('div');
-            marker.style.position = 'absolute';
+            marker.className = 'map-marker';
             marker.style.left = city.x + '%';
             marker.style.top = city.y + '%';
-            marker.style.transform = 'translate(-50%, -50%)';
-            marker.style.cursor = 'pointer';
-            marker.style.zIndex = '10';
 
-            // Create SVG circle
+            // Create SVG marker
             const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svg.setAttribute('width', '40');
-            svg.setAttribute('height', '40');
-            svg.setAttribute('viewBox', '0 0 40 40');
+            svg.setAttribute('width', '48');
+            svg.setAttribute('height', '48');
+            svg.setAttribute('viewBox', '0 0 48 48');
 
+            // Create outer circle (glow)
+            const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            glow.setAttribute('cx', '24');
+            glow.setAttribute('cy', '24');
+            glow.setAttribute('r', '16');
+            glow.setAttribute('fill', city.color);
+            glow.setAttribute('opacity', '0.2');
+
+            // Create main circle
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            circle.setAttribute('cx', '20');
-            circle.setAttribute('cy', '20');
+            circle.setAttribute('cx', '24');
+            circle.setAttribute('cy', '24');
             circle.setAttribute('r', '12');
-            circle.setAttribute('fill', color);
-            circle.setAttribute('opacity', '0.9');
+            circle.setAttribute('fill', city.color);
+            circle.setAttribute('opacity', '0.95');
 
+            // Create border
             const border = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            border.setAttribute('cx', '20');
-            border.setAttribute('cy', '20');
+            border.setAttribute('cx', '24');
+            border.setAttribute('cy', '24');
             border.setAttribute('r', '12');
             border.setAttribute('fill', 'none');
             border.setAttribute('stroke', '#fff');
-            border.setAttribute('stroke-width', '2');
+            border.setAttribute('stroke-width', '2.5');
 
+            svg.appendChild(glow);
             svg.appendChild(circle);
             svg.appendChild(border);
             marker.appendChild(svg);
 
             // Create tooltip
             const tooltip = document.createElement('div');
-            tooltip.style.position = 'absolute';
-            tooltip.style.bottom = '50px';
-            tooltip.style.left = '50%';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.style.background = 'rgba(0, 0, 0, 0.9)';
-            tooltip.style.color = color;
-            tooltip.style.padding = '10px 15px';
-            tooltip.style.borderRadius = '8px';
-            tooltip.style.fontSize = '12px';
-            tooltip.style.fontWeight = 'bold';
-            tooltip.style.whiteSpace = 'nowrap';
-            tooltip.style.opacity = '0';
-            tooltip.style.transition = 'opacity 0.3s';
-            tooltip.style.pointerEvents = 'none';
-            tooltip.innerHTML = `<strong>${city.name}</strong><br>${city.date}`;
-
+            tooltip.className = 'map-tooltip';
+            tooltip.innerHTML = `<span class="map-tooltip-city">${city.name}</span><span class="map-tooltip-date">${city.date}</span>`;
             marker.appendChild(tooltip);
-
-            // Hover effects
-            marker.addEventListener('mouseover', () => {
-                tooltip.style.opacity = '1';
-                svg.style.filter = 'brightness(1.3)';
-            });
-
-            marker.addEventListener('mouseout', () => {
-                tooltip.style.opacity = '0';
-                svg.style.filter = 'brightness(1)';
-            });
 
             mapContainer.appendChild(marker);
         });
